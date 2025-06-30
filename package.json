@@ -19,7 +19,7 @@
   "main": "dist/leaflet.distortableimage.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Hearsee-Mobility/Leaflet.DistortableImage.git"
+    "url": "git+https://github.com/Hearsee-Mobility/Leaflet.DistortableImage.git"
   },
   "keywords": [
     "leaflet",
