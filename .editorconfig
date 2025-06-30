@@ -1,0 +1,8 @@
+root = true
+
+
+quote_type = single
+trim_trailing_whitespace = true
+
+indent_style = space
+

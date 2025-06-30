@@ -33,22 +33,28 @@ module.exports = {
     'block-spacing': [2, 'always'],
     'brace-style': ['off', '1tbs', {allowSingleLine: true}],
     'comma-style': [2, 'last'],
-    'curly': [2, 'multi-line'],
+    curly: [2, 'multi-line'],
     'guard-for-in': 0,
     'linebreak-style': [2, 'unix'],
-    'max-len': ['warn', {ignoreComments: true, ignoreStrings: true, tabWidth: 2}],
+    'max-len': [
+      'warn',
+      {ignoreComments: true, ignoreStrings: true, tabWidth: 2},
+    ],
     'new-cap': 0,
     'no-trailing-spaces': 2,
     'no-var': 0,
     'prefer-const': 1,
-    'quotes': [2, 'single'],
+    quotes: [1, 'single'],
     'require-jsdoc': 0,
     'valid-jsdoc': 0,
-      'overrides': [{
-     files: ['examples/js/*.js'],
-    parserOptions: {
-         sourceType: "module",
-       }
-    }],
+    indent: 1,
+    overrides: [
+      {
+        files: ['examples/js/*.js'],
+        parserOptions: {
+          sourceType: 'module',
+        },
+      },
+    ],
   },
 };

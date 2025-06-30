@@ -1,8 +1,15 @@
 describe('L.DistortableCollection.Edit', () => {
-  let map; let overlay; let overlay2; let overlay3; let imgGroup;
+  let map;
+  let overlay;
+  let overlay2;
+  let overlay3;
+  let imgGroup;
 
   beforeEach((done) => {
-    map = L.map(L.DomUtil.create('div', '', document.body)).setView([41.7896, -87.5996], 15);
+    map = L.map(L.DomUtil.create('div', '', document.body)).setView(
+      [41.7896, -87.5996],
+      15
+    );
 
     overlay = L.distortableImageOverlay('/examples/example.jpg', {
       corners: [
@@ -15,10 +22,10 @@ describe('L.DistortableCollection.Edit', () => {
 
     overlay2 = L.distortableImageOverlay('/examples/example.jpg', {
       corners: [
-        L.latLng(41.7934, -87.6050),
-        L.latLng(41.7934, -87.5850),
-        L.latLng(41.7834, -87.6050),
-        L.latLng(41.7834, -87.5850),
+        L.latLng(41.7934, -87.605),
+        L.latLng(41.7934, -87.585),
+        L.latLng(41.7834, -87.605),
+        L.latLng(41.7834, -87.585),
       ],
     });
 
@@ -38,7 +45,9 @@ describe('L.DistortableCollection.Edit', () => {
     imgGroup.addLayer(overlay3);
 
     /* Forces the images to load before any tests are run. */
-    L.DomEvent.on(overlay3, 'load', () => { done(); });
+    L.DomEvent.on(overlay3, 'load', () => {
+      done();
+    });
   });
 
   afterEach(() => {
@@ -48,7 +57,7 @@ describe('L.DistortableCollection.Edit', () => {
   });
 
   describe('#_decollectAll', () => {
-    it('Should remove the \'selected\' class from all images', () => {
+    it('Should remove the "selected" class from all images', () => {
       const img = overlay.getElement();
       const img2 = overlay2.getElement();
 
@@ -64,7 +73,7 @@ describe('L.DistortableCollection.Edit', () => {
       }, 3000);
     });
 
-    it('Should hide all images\' handles unless they\'re lock handles', () => {
+    it("Should hide all images handles unless they're lock handles", () => {
       const edit = overlay.editing;
       const edit2 = overlay2.editing;
       const distortHandleState = [];
@@ -93,7 +102,7 @@ describe('L.DistortableCollection.Edit', () => {
       }, 3000);
     });
 
-    it('Should remove an image\'s individual toolbar instances regardless of lock handles', () => {
+    it("Should remove an image's individual toolbar instances regardless of lock handles", () => {
       const edit2 = overlay2.editing;
 
       edit2._toggleLockMode();
@@ -127,7 +136,8 @@ describe('L.DistortableCollection.Edit', () => {
       expect(map._toolbars).to.be.empty;
       imgGroup.editing._addToolbar();
       expect(Object.keys(map._toolbars)).to.have.lengthOf(1);
-      expect(Object.keys(map._toolbars)[0]._container).className = 'leaflet-control';
+      expect(Object.keys(map._toolbars)[0]._container).className =
+        'leaflet-control';
     });
 
     it('does not add multiple instances of a control toolbar', () => {
@@ -139,7 +149,8 @@ describe('L.DistortableCollection.Edit', () => {
   });
 
   describe('#_removeToolbar', () => {
-    beforeEach(() => { // multi-select the image and add the toolbar
+    beforeEach(() => {
+      // multi-select the image and add the toolbar
       chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
       imgGroup.editing._addToolbar();
 
@@ -173,7 +184,9 @@ describe('L.DistortableCollection.Edit', () => {
   describe('#_lockGroup', () => {
     beforeEach(() => {
       chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay3.getElement(), 'mousedown', {shiftKey: true});
+      chai.simulateEvent(overlay3.getElement(), 'mousedown', {
+        shiftKey: true,
+      });
 
       imgGroup.editing._lockGroup();
     });
@@ -201,8 +214,12 @@ describe('L.DistortableCollection.Edit', () => {
   describe('#_unlockGroup', () => {
     beforeEach(() => {
       chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay2.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay3.getElement(), 'mousedown', {shiftKey: true});
+      chai.simulateEvent(overlay2.getElement(), 'mousedown', {
+        shiftKey: true,
+      });
+      chai.simulateEvent(overlay3.getElement(), 'mousedown', {
+        shiftKey: true,
+      });
 
       imgGroup.editing._lockGroup();
       expect(overlay.editing._mode).to.equal('lock');
@@ -221,9 +238,13 @@ describe('L.DistortableCollection.Edit', () => {
   });
 
   describe('#_removeGroup', () => {
-    beforeEach(() => { // multi-selects the images to add them to the feature group
+    beforeEach(() => {
+      // multi-selects the images to add them to the feature group
       chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay3.getElement(), 'mousedown', {shiftKey: true});
+      chai.simulateEvent(overlay3.getElement(), 'mousedown', {
+        shiftKey: true,
+      });
+      window.confirm = sinon.spy();
     });
 
     it('removes a collection of layers', () => {
