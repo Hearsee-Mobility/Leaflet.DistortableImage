@@ -12,7 +12,8 @@
     "test": "grunt test",
     "watch:test": "grunt karma:development:start && grunt watch",
     "build": "cross-env NODE_ENV=production grunt build",
-    "linter": "grunt eslint"
+    "linter": "grunt eslint",
+    "prepare": "husky"
   },
   "browserslist": "> 0.2%, IE 9, last 2 versions",
   "main": "dist/leaflet.distortableimage.js",
@@ -65,7 +66,7 @@
     "grunt-svgmin": "^6.0.0",
     "grunt-webpack": "^5.0.0",
     "gruntify-eslint": "^5.0.0",
-    "husky": "^8.0.1",
+    "husky": "^9.1.7",
     "karma": "^6.3.14",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-chrome-launcher": "^3.1.0",

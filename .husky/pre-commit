@@ -1,0 +1,3 @@
+npm run linter
+npm run build
+git add dist/leaflet.distortableimage.js
