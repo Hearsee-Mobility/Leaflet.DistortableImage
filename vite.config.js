@@ -9,7 +9,7 @@ export default defineConfig(({mode}) => ({
   build: {
     emptyOutDir: false, // Don't clear dist/ to preserve leaflet.distortableimage.css
     lib: {
-      entry: resolve(__dirname, 'src/index.js'),
+      entry: resolve(__dirname, 'src/index.ts'),
       name: 'LeafletDistortableImage',
       fileName: 'leaflet.distortableimage',
       formats: ['iife'],
