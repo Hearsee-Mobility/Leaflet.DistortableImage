@@ -4,10 +4,10 @@ This file provides documentation for `webpack.config.js`
 
 ```javascript
 // Include necessary modules
-const glob = require('glob');
-const path = require('path');
-const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const glob = import('glob');
+const path = import('path');
+const MergeIntoSingleFilePlugin = import('webpack-merge-and-include-globally');
+const {CleanWebpackPlugin} = import('clean-webpack-plugin');
 
 const config = {
   // "production" or "development", set by cross-env in NPM scripts
@@ -26,14 +26,14 @@ const config = {
     './src/edit/getEXIFdata.js',
     './src/edit/handles/EditHandle.js',
     ...glob.sync('./src/edit/handles/*', {
-      ignore: './src/edit/handles/EditHandle.js'
+      ignore: './src/edit/handles/EditHandle.js',
     }),
     './src/iconsets/IconSet.js',
     './src/iconsets/KeymapperIconSet.js',
     './src/iconsets/ToolbarIconSet.js',
     './src/edit/actions/EditAction.js',
     ...glob.sync('./src/edit/actions/*', {
-      ignore: './src/edit/actions/EditAction.js'
+      ignore: './src/edit/actions/EditAction.js',
     }),
     './src/edit/toolbars/DistortableImage.PopupBar.js',
     './src/edit/toolbars/DistortableImage.ControlBar.js',
@@ -42,8 +42,8 @@ const config = {
     './src/components/DistortableImage.Keymapper.js',
     './src/mapmixins/DoubleClickZoom.js',
     ...glob.sync('./src/mapmixins/*', {
-      ignore: './src/mapmixins/DoubleClickZoom.js'
-    })
+      ignore: './src/mapmixins/DoubleClickZoom.js',
+    }),
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -58,7 +58,7 @@ const config = {
     // Filename of hot update chunks
     hotUpdateChunkFilename: 'hot/hot-update.js',
     // The main hot update filename
-    hotUpdateMainFilename: 'hot/hot-update.json'
+    hotUpdateMainFilename: 'hot/hot-update.json',
   },
   module: {
     rules: [
@@ -75,11 +75,11 @@ const config = {
              * @babel/preset-env allows us to write next generation JavaScript.
              * (promises, arrow functions, spread & rest operator...)
              */
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+    ],
   },
   devServer: {
     host: 'localhost',
@@ -102,7 +102,7 @@ const config = {
   devtool: 'source-map',
   // Minimize Webpack's output in terminal, only show errors
   stats: 'errors-only',
-  plugins: []
+  plugins: [],
 };
 
 /**
@@ -120,24 +120,24 @@ if (process.env.NODE_ENV === 'production') {
           './node_modules/leaflet-toolbar/dist/leaflet.toolbar.js',
           './node_modules/webgl-distort/dist/webgl-distort.js',
           './node_modules/glfx/glfx.js',
-          './node_modules/exif-js/exif.js'
+          './node_modules/exif-js/exif.js',
         ],
         // Bundle an array of 3rd party CSS files in dist/vendor.css
         'vendor.css': [
-          './node_modules/leaflet-toolbar/dist/leaflet.toolbar.css'
-        ]
+          './node_modules/leaflet-toolbar/dist/leaflet.toolbar.css',
+        ],
       },
       // Apply optimizations to bundled files
       transform: {
         // Minify and optimize vendor.js
-        'vendor.js': code => require('uglify-js').minify(code).code
-      }
+        'vendor.js': (code) => import('uglify-js').minify(code).code,
+      },
     })
   );
   config.plugins.push(
     // Before each build clean dist/ folder(except leaflet.distortableimage.css)
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*', '!leaflet.distortableimage.css']
+      cleanOnceBeforeBuildPatterns: ['**/*', '!leaflet.distortableimage.css'],
     })
   );
 }

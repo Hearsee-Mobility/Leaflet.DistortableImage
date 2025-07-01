@@ -7,7 +7,7 @@ package-lock.json
 .DS_Store
 dist/*
 !dist/leaflet.distortableimage.css
-!dist/leaflet.distortableimage.js
+!dist/leaflet.distortableimage.iife.js
 !dist/vendor.js
 !dist/vendor.css
-!dist/leaflet.distortableimage.js.map
+!dist/leaflet.distortableimage.iife.js.map

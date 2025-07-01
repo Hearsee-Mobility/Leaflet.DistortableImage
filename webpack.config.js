@@ -1,7 +1,7 @@
-const glob = require('glob');
-const path = require('path');
-const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const glob = import('glob');
+const path = import('path');
+const MergeIntoSingleFilePlugin = import('webpack-merge-and-include-globally');
+const {CleanWebpackPlugin} = import('clean-webpack-plugin');
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -65,7 +65,7 @@ const config = {
       writeToDisk: true,
     },
     client: {
-      logging: "none",
+      logging: 'none',
     },
   },
   devtool: 'source-map',
@@ -88,13 +88,13 @@ if (process.env.NODE_ENV === 'production') {
         ],
       },
       transform: {
-        'vendor.js': code => require('uglify-js').minify(code).code
-      }
+        'vendor.js': (code) => import('uglify-js').minify(code).code,
+      },
     })
   );
   config.plugins.push(
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*', '!leaflet.distortableimage.css']
+      cleanOnceBeforeBuildPatterns: ['**/*', '!leaflet.distortableimage.css'],
     })
   );
 }

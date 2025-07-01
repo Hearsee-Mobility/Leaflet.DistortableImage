@@ -1,22 +1,31 @@
 {
   "name": "@hearsee-mobility/leaflet-distortableimage",
   "version": "0.22.0",
+  "type": "module",
   "description": "Leaflet plugin enabling image overlays to be distorted, stretched, and warped (built for Public Lab's MapKnitter: http://publiclab.org).",
   "engines": {
     "node": ">=10.0.0"
   },
   "scripts": {
     "setup": "npm i && npm run build",
-    "watch:dev": "webpack --watch",
-    "serve:dev": "cross-env NODE_ENV=development webpack-dev-server",
+    "dev": "vite",
+    "build": "cross-env NODE_ENV=production vite build",
+    "preview": "vite preview",
+    "serve:dev": "vite",
+    "watch:dev": "vite build --watch",
     "test": "grunt test",
     "watch:test": "grunt karma:development:start && grunt watch",
-    "build": "cross-env NODE_ENV=production grunt build",
     "linter": "grunt eslint",
     "prepare": "husky"
   },
-  "browserslist": "> 0.2%, IE 9, last 2 versions",
-  "main": "dist/leaflet.distortableimage.js",
+  "browserslist": "> 2%, last 2 versions, not dead",
+  "main": "dist/leaflet.distortableimage.iife.js",
+  "exports": {
+    ".": {
+      "import": "./dist/leaflet.distortableimage.iife.js"
+    },
+    "./dist/leaflet.distortableimage.css": "./dist/leaflet.distortableimage.css"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Hearsee-Mobility/Leaflet.DistortableImage.git"
@@ -47,12 +56,10 @@
     "webgl-distort": "0.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
+    "@babel/core": "^7.27.7",
+    "@babel/preset-env": "^7.27.2",
     "acorn": "^8.7.1",
-    "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
-    "clean-webpack-plugin": "^4.0.0",
     "cross-env": "^7.0.2",
     "eslint": "^8.16.0",
     "eslint-config-google": "^0.14.0",
@@ -62,9 +69,9 @@
     "grunt-contrib-concat": "^2.1.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-karma": "^4.0.0",
+    "grunt-shell": "^4.0.0",
     "grunt-svg-sprite": "^1.5.0",
     "grunt-svgmin": "^6.0.0",
-    "grunt-webpack": "^5.0.0",
     "gruntify-eslint": "^5.0.0",
     "husky": "^9.1.7",
     "karma": "^6.3.14",
@@ -78,11 +85,7 @@
     "matchdep": "^2.0.0",
     "mocha": "^10.0.0",
     "sinon": "^14.0.0",
-    "uglify-js": "^3.7.4",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.9.0",
-    "webpack-merge-and-include-globally": "^2.1.24"
+    "vite": "^5.4.19"
   },
   "peerDependencies": {
     "leaflet": "1.x"

@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Image Sequencer</title>
-    <meta http-equiv="refresh" content="0; url=examples/" />
-  </head>
-  <body>
+    <meta charset="utf-8" />
+    <title>Leaflet DistortableImage Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css" />
+
+    <!-- Development: Load vendor CSS -->
+    <link
+      rel="stylesheet"
+      href="./node_modules/leaflet-toolbar/dist/leaflet.toolbar.css"
+    />
+
+    <!-- Plugin CSS -->
+    <link
+      rel="stylesheet"
+      href="./dist/leaflet.distortableimage.css"
+      media="screen"
+    />
+
+    <!-- Control geocoder CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+    />
+  </head>
+  <body style="margin: 0">
+    <!-- Leaflet JS -->
+    <script src="./node_modules/leaflet/dist/leaflet.js"></script>
+
+    <!-- Development: Load vendor scripts individually -->
+    <script src="./node_modules/leaflet-toolbar/dist/leaflet.toolbar.js"></script>
+    <script src="./node_modules/webgl-distort/dist/webgl-distort.js"></script>
+    <script src="./node_modules/glfx/glfx.js"></script>
+    <script src="./node_modules/exif-js/exif.js"></script>
+
+    <!-- Load the plugin (in production, use the built version) -->
+    <script src="./dist/leaflet.distortableimage.iife.js"></script>
+
+    <!-- External dependencies -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <!-- Example form and map -->
+    <form id="test_form">
+      <label for="inputimage">Select an image file:</label>
+      <input type="file" class="ldi" id="inputimage" accept="image/*" />
+    </form>
+    <div
+      id="map"
+      style="width: 100%; height: 100vh; position: absolute; top: 0"
+    ></div>
+
+    <!-- Basic example script -->
+    <script type="module">
+      import './examples/js/index.js';
+    </script>
   </body>
 </html>

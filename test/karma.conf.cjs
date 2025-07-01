@@ -4,12 +4,12 @@ module.exports = function (config) {
     basePath: '../',
 
     plugins: [
-      import('karma-babel-preprocessor'),
-      import('karma-chrome-launcher'),
-      import('karma-coverage'),
-      import('karma-mocha'),
-      import('karma-mocha-reporter'),
-      import('karma-sinon'),
+      require('karma-babel-preprocessor'),
+      require('karma-chrome-launcher'),
+      require('karma-coverage'),
+      require('karma-mocha'),
+      require('karma-mocha-reporter'),
+      require('karma-sinon'),
     ],
 
     frameworks: ['mocha', 'sinon'],
