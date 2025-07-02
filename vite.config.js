@@ -15,7 +15,7 @@ export default defineConfig(({mode}) => ({
       formats: ['iife'],
     },
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: 'inline',
     rollupOptions: {
       // Externalize dependencies that should be loaded separately
       external: [
