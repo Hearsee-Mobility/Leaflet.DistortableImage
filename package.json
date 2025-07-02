@@ -1,6 +1,6 @@
 {
   "name": "@hearsee-mobility/leaflet-distortableimage",
-  "version": "0.24.4",
+  "version": "0.24.5",
   "type": "module",
   "description": "Leaflet plugin enabling image overlays to be distorted, stretched, and warped (built for Public Lab's MapKnitter: http://publiclab.org).",
   "engines": {
