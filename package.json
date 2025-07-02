@@ -1,6 +1,6 @@
 {
   "name": "@hearsee-mobility/leaflet-distortableimage",
-  "version": "0.24.3",
+  "version": "0.24.4",
   "type": "module",
   "description": "Leaflet plugin enabling image overlays to be distorted, stretched, and warped (built for Public Lab's MapKnitter: http://publiclab.org).",
   "engines": {
@@ -10,7 +10,7 @@
     "setup": "npm i && npm run build",
     "dev": "vite",
     "build": "npm run build:types && cross-env NODE_ENV=production vite build",
-    "build:types": "tsc --emitDeclarationOnly",
+    "build:types": "tsc --emitDeclarationOnly --sourceMap",
     "preview": "vite preview",
     "serve:dev": "vite",
     "watch:dev": "vite build --watch",
