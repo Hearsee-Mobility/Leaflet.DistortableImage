@@ -41,7 +41,7 @@ declare module 'leaflet' {
       static extend(props: any): any;
       initialize(options?: ActionOptions): void;
       enable(): void;
-      
+
       static baseClass: string;
     }
 
@@ -125,11 +125,7 @@ declare module 'leaflet' {
 
   // DistortableImageOverlay class
   class DistortableImageOverlay extends ImageOverlay {
-    constructor(
-      url: string,
-      bounds: LatLngBoundsExpression,
-      options?: DistortableImageOverlayOptions
-    );
+    constructor(url: string, options?: DistortableImageOverlayOptions);
 
     // Properties
     editing: boolean;
@@ -724,9 +720,9 @@ declare module 'leaflet' {
   namespace OpacitiesAction {
     // Default opacity levels: [100, 80, 60, 40, 20, 0]
     type OpacityLevel = 0 | 20 | 40 | 60 | 80 | 100;
-    
+
     interface OpacityLevelActionConstructor {
-      new(): OpacityLevelAction;
+      new (): OpacityLevelAction;
       extend(props: any): OpacityLevelActionConstructor;
     }
 
