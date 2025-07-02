@@ -213,7 +213,6 @@ declare module 'leaflet' {
   // Factory functions
   function distortableImageOverlay(
     url: string,
-    bounds: LatLngBoundsExpression,
     options?: DistortableImageOverlayOptions
   ): DistortableImageOverlay;
 
