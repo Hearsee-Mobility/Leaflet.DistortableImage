@@ -20,6 +20,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     this._selected = this.options.selected;
     this._url = url;
     this.rotation = {};
+    this._corners = this.options.corners || [];
 
     this.interactive = this.options.interactive;
     this.tooltipText = this.options.tooltipText;
@@ -27,7 +28,9 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 
   onAdd(map) {
     this._map = map;
-    if (!this.getElement()) { this._initImage(); }
+    if (!this.getElement()) {
+      this._initImage();
+    }
 
     map.on('viewreset', this._reset, this);
 
@@ -62,19 +65,27 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
       const eventParents = this._eventParents;
       if (eventParents) {
         this.eP = eventParents[Object.keys(eventParents)[0]];
-        if (this.eP.editable) { this.editing.enable(); }
+        if (this.eP.editable) {
+          this.editing.enable();
+        }
       } else {
-        if (this.editable) { this.editing.enable(); }
+        if (this.editable) {
+          this.editing.enable();
+        }
         this.eP = null;
       }
     });
 
     L.DomEvent.on(this.getElement(), 'click', this.select, this);
-    L.DomEvent.on(map, {
-      singleclickon: this._singleClickListeners,
-      singleclickoff: this._resetClickListeners,
-      singleclick: this._singleClick,
-    }, this);
+    L.DomEvent.on(
+      map,
+      {
+        singleclickon: this._singleClickListeners,
+        singleclickoff: this._resetClickListeners,
+        singleclick: this._singleClick,
+      },
+      this
+    );
 
     /**
      * custom events fired from DoubleClickLabels.js. Used to differentiate
@@ -92,20 +103,31 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 
   onRemove(map) {
     L.DomEvent.off(this.getElement(), 'click', this.select, this);
-    L.DomEvent.off(map, {
-      singleclickon: this._singleClickListeners,
-      singleclickoff: this._resetClickListeners,
-      singleclick: this._singleClick,
-    }, this);
+    L.DomEvent.off(
+      map,
+      {
+        singleclickon: this._singleClickListeners,
+        singleclickoff: this._resetClickListeners,
+        singleclick: this._singleClick,
+      },
+      this
+    );
     L.DomEvent.off(map, 'click', this.deselect, this);
 
-    if (this.editing) { this.editing.disable(); }
+    if (this.editing) {
+      this.editing.disable();
+    }
     this.fire('remove');
 
     L.ImageOverlay.prototype.onRemove.call(this, map);
 
     L.DomEvent.on(this.getElement(), 'mouseout', this.closeTooltip, this);
-    L.DomEvent.off(this.getElement(), 'mousemove', this.deactivateTooltip, this);
+    L.DomEvent.off(
+      this.getElement(),
+      'mousemove',
+      this.deactivateTooltip,
+      this
+    );
   },
 
   _initImageDimensions() {
@@ -113,7 +135,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     const originalImageWidth = L.DomUtil.getStyle(this.getElement(), 'width');
     const originalImageHeight = L.DomUtil.getStyle(this.getElement(), 'height');
     const aspectRatio =
-        parseInt(originalImageWidth) / parseInt(originalImageHeight);
+      parseInt(originalImageWidth) / parseInt(originalImageHeight);
     const imageHeight = this.options.height;
     const imageWidth = parseInt(aspectRatio * imageHeight);
     const center = map.project(map.getCenter());
@@ -130,16 +152,19 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     }
 
     this._initialDimensions = {
-      'center': center,
-      'offset': offset,
-      'zoom': map.getZoom(),
+      center: center,
+      offset: offset,
+      zoom: map.getZoom(),
     };
     this.setBounds(L.latLngBounds(this.getCorners()));
   },
 
   _singleClick(e) {
-    if (e.type === 'singleclick') { this.deselect(); }
-    else { return; }
+    if (e.type === 'singleclick') {
+      this.deselect();
+    } else {
+      return;
+    }
   },
 
   _singleClickListeners() {
@@ -160,7 +185,9 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 
   deselect() {
     const edit = this.editing;
-    if (!edit.enabled()) { return; }
+    if (!edit.enabled()) {
+      return;
+    }
 
     edit._removeToolbar();
     edit._hideMarkers();
@@ -174,8 +201,12 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     const edit = this.editing;
     const eP = this.eP;
 
-    if (!edit.enabled()) { return; }
-    if (e) { L.DomEvent.stopPropagation(e); }
+    if (!edit.enabled()) {
+      return;
+    }
+    if (e) {
+      L.DomEvent.stopPropagation(e);
+    }
 
     // this ensures deselection of all other images, allowing us to keep collection group optional
     this._programmaticGrouping();
@@ -232,7 +263,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
         exceedsTop = map.project(corner).y / zoom < 2;
         exceedsBottom = map.project(corner).y / Math.pow(2, zoom) >= 255;
       }
-      return (exceedsTop || exceedsBottom);
+      return exceedsTop || exceedsBottom;
     }
   },
 
@@ -328,14 +359,16 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     let p;
     const scaledCorners = {};
 
-    if (scale === 0) { return; }
+    if (scale === 0) {
+      return;
+    }
 
     for (i = 0; i < 4; i++) {
       p = map
-          .project(this.getCorner(i))
-          .subtract(center)
-          .multiplyBy(scale)
-          .add(center);
+        .project(this.getCorner(i))
+        .subtract(center)
+        .multiplyBy(scale)
+        .add(center);
       scaledCorners[i] = map.unproject(p);
     }
 
@@ -345,10 +378,10 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   },
 
   getAngle(unit = 'deg') {
-    const matrix = this.getElement().style[L.DomUtil.TRANSFORM]
-        .split('matrix3d')[1]
-        .slice(1, -1)
-        .split(',');
+    const matrix = this.getElement()
+      .style[L.DomUtil.TRANSFORM].split('matrix3d')[1]
+      .slice(1, -1)
+      .split(',');
 
     const row0x = matrix[0];
     const row0y = matrix[1];
@@ -367,9 +400,9 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
       angle = 2 * Math.PI + angle;
     }
 
-    return unit === 'deg' ?
-        Math.round(L.TrigUtil.radiansToDegrees(angle)) :
-        L.Util.formatNum(angle, 2);
+    return unit === 'deg'
+      ? Math.round(L.TrigUtil.radiansToDegrees(angle))
+      : L.Util.formatNum(angle, 2);
   },
 
   setAngle(angle, unit = 'deg') {
@@ -395,8 +428,8 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     for (i = 0; i < 4; i++) {
       p = map.project(this.getCorner(i)).subtract(center);
       q = L.point(
-          Math.cos(angle) * p.x - Math.sin(angle) * p.y,
-          Math.sin(angle) * p.x + Math.cos(angle) * p.y
+        Math.cos(angle) * p.x - Math.sin(angle) * p.y,
+        Math.sin(angle) * p.x + Math.cos(angle) * p.y
       );
       corners[i] = map.unproject(q.add(center));
     }
@@ -465,8 +498,8 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     const map = this._map;
     const image = this.getElement();
     const latLngToLayerPoint = L.bind(map.latLngToLayerPoint, map);
-    const transformMatrix = this
-        ._calculateProjectiveTransform(latLngToLayerPoint);
+    const transformMatrix =
+      this._calculateProjectiveTransform(latLngToLayerPoint);
     const topLeft = latLngToLayerPoint(this.getCorner(0));
     const warp = L.DomUtil.getMatrixString(transformMatrix);
     const translation = this._getTranslateString(topLeft);
@@ -494,11 +527,11 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   _animateZoom(event) {
     const map = this._map;
     const image = this.getElement();
-    const latLngToNewLayerPoint = function(latlng) {
+    const latLngToNewLayerPoint = function (latlng) {
       return map._latLngToNewLayerPoint(latlng, event.zoom, event.center);
     };
     const transformMatrix = this._calculateProjectiveTransform(
-        latLngToNewLayerPoint
+      latLngToNewLayerPoint
     );
     const topLeft = latLngToNewLayerPoint(this.getCorner(0));
     const warp = L.DomUtil.getMatrixString(transformMatrix);
@@ -521,7 +554,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   // image (vertex) centroid calculation
   getCenter() {
     const map = this._map;
-    const reduce = this.getCorners().reduce(function(agg, corner) {
+    const reduce = this.getCorners().reduce(function (agg, corner) {
       return agg.add(map.project(corner));
     }, L.point(0, 0));
     return map.unproject(reduce.divideBy(4));
@@ -553,19 +586,31 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
      * maps to the first latlng in this._corners.
      */
     return L.MatrixUtil.general2DProjection(
-        0, 0, c[0].x, c[0].y,
-        w, 0, c[1].x, c[1].y,
-        0, h, c[2].x, c[2].y,
-        w, h, c[3].x, c[3].y
+      0,
+      0,
+      c[0].x,
+      c[0].y,
+      w,
+      0,
+      c[1].x,
+      c[1].y,
+      0,
+      h,
+      c[2].x,
+      c[2].y,
+      w,
+      h,
+      c[3].x,
+      c[3].y
     );
   },
 });
 
-L.distortableImageOverlay = function(id, options) {
+L.distortableImageOverlay = function (id, options) {
   return new L.DistortableImageOverlay(id, options);
 };
 
-L.Map.addInitHook(function() {
+L.Map.addInitHook(function () {
   if (!L.DomUtil.hasClass(this.getContainer(), 'ldi')) {
     L.DomUtil.addClass(this.getContainer(), 'ldi');
   }

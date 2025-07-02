@@ -70,7 +70,7 @@ declare module 'leaflet' {
   // Options interfaces
   interface DistortableImageOverlayOptions extends ImageOverlayOptions {
     actions?: any[];
-    corners?: [LatLngTuple, LatLngTuple, LatLngTuple, LatLngTuple];
+    corners?: [LatLngTuple, LatLngTuple, LatLngTuple, LatLngTuple] | LatLngExpression[];
     cornerHandles?: boolean;
     edgeHandles?: boolean;
     rotateHandles?: boolean;
