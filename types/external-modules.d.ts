@@ -15,6 +15,37 @@ declare module 'leaflet-toolbar' {
         static extend(props: any): any;
       }
     }
+
+    namespace Toolbar2 {
+      interface ActionOptions {
+        toolbarIcon?: ToolbarIconOptions;
+        subToolbar?: any;
+      }
+
+      interface ToolbarIconOptions {
+        svg?: boolean;
+        html?: string;
+        className?: string;
+        tooltip?: string;
+        style?: string;
+      }
+
+      class Action {
+        options: ActionOptions;
+        toolbar: any;
+        _icon: HTMLLIElement;
+        _link: HTMLAnchorElement;
+        _overlay: DistortableImageOverlay | DistortableCollection;
+        _map: Map;
+
+        constructor();
+        static extend(props: any): any;
+        initialize(options?: ActionOptions): void;
+        enable(): void;
+
+        static baseClass: string;
+      }
+    }
   }
 }
 
