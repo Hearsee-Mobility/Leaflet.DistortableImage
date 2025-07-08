@@ -1,6 +1,6 @@
 {
   "name": "@hearsee-mobility/leaflet-distortableimage",
-  "version": "0.24.6",
+  "version": "0.24.7",
   "type": "module",
   "description": "Leaflet plugin enabling image overlays to be distorted, stretched, and warped (built for Public Lab's MapKnitter: http://publiclab.org).",
   "engines": {
@@ -61,7 +61,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.7",
     "@babel/preset-env": "^7.27.2",
-    "@types/leaflet": "^1.9.12",
+    "@types/leaflet": "^1.9.20",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "acorn": "^8.7.1",

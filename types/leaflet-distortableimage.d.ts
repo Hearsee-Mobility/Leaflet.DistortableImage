@@ -70,7 +70,9 @@ declare module 'leaflet' {
   // Options interfaces
   interface DistortableImageOverlayOptions extends ImageOverlayOptions {
     actions?: any[];
-    corners?: [LatLngTuple, LatLngTuple, LatLngTuple, LatLngTuple] | LatLngExpression[];
+    corners?:
+      | [LatLngTuple, LatLngTuple, LatLngTuple, LatLngTuple]
+      | LatLngExpression[];
     cornerHandles?: boolean;
     edgeHandles?: boolean;
     rotateHandles?: boolean;
@@ -80,7 +82,7 @@ declare module 'leaflet' {
     selected?: boolean;
     minScale?: number;
     maxScale?: number;
-    rotation?: boolean;
+    rotation?: {deg: number;};
   }
 
   interface DistortableCollectionOptions extends LayerGroupOptions {
@@ -149,13 +151,12 @@ declare module 'leaflet' {
     setCorners(corners: LatLng[]): this;
     getCorners(): LatLng[];
     setUrl(url: string): this;
-    setBounds(bounds: LatLngBoundsExpression): this;
     setOpacity(opacity: number): this;
     getOpacity(): number;
     bringToFront(): this;
     bringToBack(): this;
-    rotate(angle: number): this;
-    scaleUniform(scale: number): this;
+    rotateBy(angle: number): this;
+    scaleBy(scale: number): this;
     exportImage(options?: ExportOptions): string;
     _reset(): void;
     _updateCorners(): void;
