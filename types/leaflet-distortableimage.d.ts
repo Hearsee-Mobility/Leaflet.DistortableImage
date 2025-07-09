@@ -82,7 +82,7 @@ declare module 'leaflet' {
     selected?: boolean;
     minScale?: number;
     maxScale?: number;
-    rotation?: {deg: number;};
+    rotation?: {deg: number};
   }
 
   interface DistortableCollectionOptions extends LayerGroupOptions {
@@ -148,6 +148,8 @@ declare module 'leaflet' {
     enableEdit(): this;
     disableEdit(): this;
     isEditing(): boolean;
+    setAngle(angle: number, unit: 'deg' | 'rad' = 'deg'): this;
+    getAngle(): number;
     setCorners(corners: LatLng[]): this;
     getCorners(): LatLng[];
     setUrl(url: string): this;
