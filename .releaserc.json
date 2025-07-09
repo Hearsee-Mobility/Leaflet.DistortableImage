@@ -1,0 +1,17 @@
+{
+  "repositoryUrl": "git+https://github.com/Hearsee-Mobility/Leaflet.DistortableImage.git",
+  "branches": ["main"],
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "angular",
+        "releaseRules": [
+          {"type": "style", "release": "patch"},
+          {"type": "chore", "release": "patch"},
+          {"type": "refactor", "release": "minor"}
+        ]
+      }
+    ]
+  ]
+}
