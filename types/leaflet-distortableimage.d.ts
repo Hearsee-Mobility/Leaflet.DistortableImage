@@ -149,7 +149,7 @@ declare module 'leaflet' {
     disableEdit(): this;
     isEditing(): boolean;
     setAngle(angle: number, unit: 'deg' | 'rad' = 'deg'): this;
-    getAngle(): number;
+    getAngle(unit: 'deg' | 'rad' = 'deg'): number;
     setCorners(corners: LatLng[]): this;
     getCorners(): LatLng[];
     setUrl(url: string): this;
