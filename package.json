@@ -1,6 +1,6 @@
 {
   "name": "@hearsee-mobility/leaflet-distortableimage",
-  "version": "0.24.8",
+  "version": "0.0.0-semantic-release",
   "type": "module",
   "description": "Leaflet plugin enabling image overlays to be distorted, stretched, and warped (built for Public Lab's MapKnitter: http://publiclab.org).",
   "engines": {
@@ -32,6 +32,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Hearsee-Mobility/Leaflet.DistortableImage.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "keywords": [
     "leaflet",
