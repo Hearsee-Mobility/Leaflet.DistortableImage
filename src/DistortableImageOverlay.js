@@ -74,6 +74,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
         }
         this.eP = null;
       }
+      this.fire('add');
     });
 
     L.DomEvent.on(this.getElement(), 'click', this.select, this);
@@ -94,8 +95,6 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     if (!(map.doubleClickZoom.enabled() || map.doubleClickLabels.enabled())) {
       L.DomEvent.on(map, 'click', this.deselect, this);
     }
-
-    this.fire('add');
 
     L.DomEvent.on(this.getElement(), 'mousemove', this.activateTooltip, this);
     L.DomEvent.on(this.getElement(), 'mouseout', this.closeTooltip, this);
