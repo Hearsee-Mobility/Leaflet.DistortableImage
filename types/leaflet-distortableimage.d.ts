@@ -126,6 +126,18 @@ declare module 'leaflet' {
     'collection:edit:disable': LeafletEvent;
   }
 
+  type EventTypes =
+    | 'add'
+    | 'remove'
+    | 'deselect'
+    | 'select'
+    | 'update'
+    | 'edit'
+    | 'editstart'
+    | 'dragstart'
+    | 'drag'
+    | 'dragend';
+
   // DistortableImageOverlay class
   class DistortableImageOverlay extends ImageOverlay {
     constructor(url: string, options?: DistortableImageOverlayOptions);
@@ -165,9 +177,9 @@ declare module 'leaflet' {
     _animateZoom(e: ZoomAnimEvent): void;
 
     // Event methods
-    on(type: string, fn: Function, context?: any): this;
-    off(type?: string, fn?: Function, context?: any): this;
-    fire(type: string, data?: any, propagate?: boolean): this;
+    on(type: EventTypes, fn: Function, context?: any): this;
+    off(type?: EventTypes, fn?: Function, context?: any): this;
+    fire(type: EventTypes, data?: any, propagate?: boolean): this;
   }
 
   // DistortableCollection class
