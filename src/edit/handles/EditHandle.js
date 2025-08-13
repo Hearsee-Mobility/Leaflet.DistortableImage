@@ -26,6 +26,8 @@ L.EditHandle = L.Marker.extend({
   },
 
   onRemove(map) {
+    // FIXME: handle layers are getting AFTER the image overlay, leading to null this._handles._map data
+    // the code where a layer is being removed a second time is at file:///Users/joemoran/Development/Leaflet.DistortableImage/node_modules/leaflet/dist/leaflet-src.js line 6673
     this._unbindListeners();
     L.Marker.prototype.onRemove.call(this, map);
   },
@@ -44,26 +46,34 @@ L.EditHandle = L.Marker.extend({
   },
 
   _bindListeners() {
-    this.on({
-      contextmenu: L.DomEvent.stop,
-      dragstart: this._onHandleDragStart,
-      drag: this._onHandleDrag,
-      dragend: this._onHandleDragEnd,
-    }, this);
+    this.on(
+      {
+        contextmenu: L.DomEvent.stop,
+        dragstart: this._onHandleDragStart,
+        drag: this._onHandleDrag,
+        dragend: this._onHandleDragEnd,
+      },
+      this
+    );
 
     this._handled._map.on('zoomend', this.updateHandle, this);
     this._handled.on('update', this.updateHandle, this);
   },
 
   _unbindListeners() {
-    this.off({
-      contextmenu: L.DomEvent.stop,
-      dragstart: this._onHandleDragStart,
-      drag: this._onHandleDrag,
-      dragend: this._onHandleDragEnd,
-    }, this);
+    this.off(
+      {
+        contextmenu: L.DomEvent.stop,
+        dragstart: this._onHandleDragStart,
+        drag: this._onHandleDrag,
+        dragend: this._onHandleDragEnd,
+      },
+      this
+    );
 
-    this._handled._map.off('zoomend', this.updateHandle, this);
+    if (this._handled._map) {
+      this._handled._map.off('zoomend', this.updateHandle, this);
+    }
     this._handled.off('update', this.updateHandle, this);
   },
 
@@ -94,16 +104,17 @@ L.EditHandle = L.Marker.extend({
     const overlay = this._handled;
     const map = overlay._map;
 
-
     const centerPoint = map.latLngToLayerPoint(overlay.getCenter());
     const formerPoint = map.latLngToLayerPoint(latlngA);
     const newPoint = map.latLngToLayerPoint(latlngB);
 
-    const initialAngle = (
-      Math.atan2(centerPoint.y - formerPoint.y, centerPoint.x - formerPoint.x)
+    const initialAngle = Math.atan2(
+      centerPoint.y - formerPoint.y,
+      centerPoint.x - formerPoint.x
     );
-    const newAngle = (
-      Math.atan2(centerPoint.y - newPoint.y, centerPoint.x - newPoint.x)
+    const newAngle = Math.atan2(
+      centerPoint.y - newPoint.y,
+      centerPoint.x - newPoint.x
     );
 
     return newAngle - initialAngle;

@@ -31,7 +31,7 @@ L.LockHandle = L.EditHandle.extend({
   _unbindListeners() {
     const icon = this.getElement();
 
-    L.EditHandle.prototype._bindListeners.call(this);
+    L.EditHandle.prototype._unbindListeners.call(this);
 
     L.DomEvent.off(icon, {
       mousedown: this._tooltipOn,
