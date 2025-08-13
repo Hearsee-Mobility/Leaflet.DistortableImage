@@ -14,7 +14,7 @@ L.DistortableImage.Edit = L.Handler.extend({
     this._mode = overlay.options.mode;
     this._transparent = false;
     this._outlined = false;
-    this._opacity = options.opacity;
+    this._opacity = overlay.options.opacity;
 
     L.setOptions(this, options);
 
@@ -32,6 +32,8 @@ L.DistortableImage.Edit = L.Handler.extend({
     this._initModes();
     this._initHandles();
     this._appendHandlesandDragable();
+
+    this._setOpacity(this._opacity);
 
     if (overlay.isSelected() && !overlay.options.suppressToolbar) {
       this._addToolbar();
@@ -360,16 +362,23 @@ L.DistortableImage.Edit = L.Handler.extend({
   },
 
   _setOpacities(o) {
-    const image = this._overlay.getElement();
     this._opacity = o;
-    if (!this.hasTool(L.OpacitiesAction)) { return; }
+    if (!this.hasTool(L.OpacitiesAction)) {
+      return;
+    }
 
-    (this._opacity < 1) ? this._transparent = true : this._transparent = false;
+    this._opacity < 1
+      ? (this._transparent = true)
+      : (this._transparent = false);
 
-    L.DomUtil.setOpacity(image, this._opacity);
-    image.setAttribute('opacity', this._opacity);
-
+    this._setOpacity(this._opacity);
     this._refresh();
+  },
+
+  _setOpacity(opacity) {
+    const image = this._overlay.getElement();
+    L.DomUtil.setOpacity(image, opacity);
+    image.setAttribute('opacity', opacity);
   },
 
   _toggleBorder() {
