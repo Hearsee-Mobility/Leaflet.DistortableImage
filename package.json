@@ -14,9 +14,8 @@
     "preview": "vite preview",
     "serve:dev": "vite",
     "watch:dev": "vite build --watch",
-    "test": "grunt test",
-    "watch:test": "grunt karma:development:start && grunt watch",
-    "linter": "grunt eslint",
+    "test": "npx karma start test/karma.conf.cjs",
+    "lint": "eslint",
     "prepare": "husky"
   },
   "browserslist": "> 2%, last 2 versions, not dead",
@@ -76,37 +75,23 @@
     "eslint": "^8.16.0",
     "eslint-config-google": "^0.14.0",
     "glob": "^8.0.3",
-    "grunt": "^1.1.0",
-    "grunt-cli": "^1.3.2",
-    "grunt-contrib-concat": "^2.1.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-karma": "^4.0.0",
-    "grunt-shell": "^4.0.0",
-    "grunt-svg-sprite": "^1.5.0",
-    "grunt-svgmin": "^6.0.0",
-    "gruntify-eslint": "^5.0.0",
     "husky": "^9.1.7",
     "karma": "^6.3.14",
     "karma-babel-preprocessor": "^8.0.1",
     "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
     "karma-coverage": "^2.0.3",
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-sinon": "^1.0.5",
     "leaflet": "1.x",
-    "matchdep": "^2.0.0",
     "mocha": "^10.0.0",
     "semantic-release": "^24.2.6",
     "sinon": "^14.0.0",
-    "typescript": "^5.0.0",
-    "vite": "^5.4.19"
+    "typescript": "^5.8.3",
+    "vite": "^7.0.5"
   },
   "peerDependencies": {
     "leaflet": "1.x"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run linter && npm run build && git add dist/leaflet.distortableimage.js"
-    }
   }
 }
