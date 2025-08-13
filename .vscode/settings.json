@@ -1,8 +1,22 @@
 {
-  "editor.formatOnSave": true,
+  "cssrem.rootFontSize": 16, // allows for dynamic font-size using `rem` values for screen-reader magnification
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "javascript.preferences.quoteStyle": "single",
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "all",
-  "editor.indentSize": 8
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true,
+  "editor.renderFinalNewline": "on",
+  "editor.rulers": [120],
+  "editor.tabSize": 2,
+  "files.exclude": {
+    "node_modules": true
+  },
+  "stylelint.packageManager": "npm",
+  "stylelint.validate": ["vue", "scss"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "prettier.useEditorConfig": true,
+  "testing.automaticallyOpenPeekView": "never"
 }

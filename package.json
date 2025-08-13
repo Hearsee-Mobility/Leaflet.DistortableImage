@@ -16,7 +16,8 @@
     "watch:dev": "vite build --watch",
     "test": "npx karma start test/karma.conf.cjs",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format": "prettier src/ --write"
   },
   "browserslist": "> 2%, last 2 versions, not dead",
   "main": "dist/leaflet.distortableimage.iife.js",
@@ -86,6 +87,7 @@
     "karma-sinon": "^1.0.5",
     "leaflet": "1.x",
     "mocha": "^10.0.0",
+    "prettier": "^3.6.2",
     "semantic-release": "^24.2.6",
     "sinon": "^14.0.0",
     "typescript": "^5.8.3",

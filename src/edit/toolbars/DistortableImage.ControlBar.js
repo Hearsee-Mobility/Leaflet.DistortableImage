@@ -5,19 +5,14 @@ L.DistortableImage.group_action_map = {};
 
 L.DistortableImage.ControlBar = L.Toolbar2.Control.extend({});
 
-L.distortableImage.controlBar = function(options) {
+L.distortableImage.controlBar = function (options) {
   return new L.DistortableImage.ControlBar(options);
 };
 
 /** addInitHooks run before onAdd */
-L.DistortableCollection.addInitHook(function() {
+L.DistortableCollection.addInitHook(function () {
   /** Default actions */
-  this.ACTIONS = [
-    L.ExportAction,
-    L.DeleteAction,
-    L.LockAction,
-    L.UnlockAction,
-  ];
+  this.ACTIONS = [L.ExportAction, L.DeleteAction, L.LockAction, L.UnlockAction];
 
   // all possible modes
   L.DistortableCollection.Edit.MODES = {

@@ -21,10 +21,8 @@ L.Utils = {
       stackToFront: 'Stack to Front',
       stackToBack: 'Stack to Back',
       unlockImages: 'Unlock Images',
-      confirmImageDelete:
-        'Are you sure? This image will be permanently deleted from the map.',
-      confirmImagesDeletes:
-        'Are you sure? These images will be permanently deleted from the map.',
+      confirmImageDelete: 'Are you sure? This image will be permanently deleted from the map.',
+      confirmImagesDeletes: 'Are you sure? These images will be permanently deleted from the map.',
     };
 
     if (!this.options.translation) {
@@ -43,7 +41,7 @@ L.Utils = {
 
   getNestedVal(obj, key, nestedKey) {
     const dig = [key, nestedKey];
-    return dig.reduce(function(obj, k) {
+    return dig.reduce(function (obj, k) {
       return obj && obj[k];
     }, obj);
   },

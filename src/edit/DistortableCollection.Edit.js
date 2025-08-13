@@ -20,9 +20,10 @@ L.DistortableCollection.Edit = L.Handler.extend({
     const map = group._map;
 
     this.editActions = this.options.actions;
-    this.runExporter =
-        L.bind(L.Utils.getNestedVal(this, '_exportOpts', 'exporter') ||
-        this.startExport, this);
+    this.runExporter = L.bind(
+      L.Utils.getNestedVal(this, '_exportOpts', 'exporter') || this.startExport,
+      this,
+    );
 
     L.DomEvent.on(document, 'keydown', this._onKeyDown, this);
 
@@ -30,15 +31,19 @@ L.DistortableCollection.Edit = L.Handler.extend({
       L.DomEvent.on(map, 'click', this._decollectAll, this);
     }
 
-    L.DomEvent.on(map, {
-      singleclickon: this._singleClickListeners,
-      singleclickoff: this._resetClickListeners,
-      singleclick: this._singleClick,
-      boxcollectend: this._addCollections,
-    }, this);
+    L.DomEvent.on(
+      map,
+      {
+        singleclickon: this._singleClickListeners,
+        singleclickoff: this._resetClickListeners,
+        singleclick: this._singleClick,
+        boxcollectend: this._addCollections,
+      },
+      this,
+    );
 
     this._group.editable = true;
-    this._group.eachLayer(layer => layer.editing.enable());
+    this._group.eachLayer((layer) => layer.editing.enable());
   },
 
   removeHooks() {
@@ -51,16 +56,20 @@ L.DistortableCollection.Edit = L.Handler.extend({
       L.DomEvent.off(map, 'click', this._decollectAll, this);
     }
 
-    L.DomEvent.off(map, {
-      singleclickon: this._singleClickListeners,
-      singleclickoff: this._resetClickListeners,
-      singleclick: this._singleClick,
-      boxcollectend: this._addCollections,
-    }, this);
+    L.DomEvent.off(
+      map,
+      {
+        singleclickon: this._singleClickListeners,
+        singleclickoff: this._resetClickListeners,
+        singleclick: this._singleClick,
+        boxcollectend: this._addCollections,
+      },
+      this,
+    );
 
     this._decollectAll();
     this._group.editable = false;
-    this._group.eachLayer(layer => layer.editing.disable());
+    this._group.eachLayer((layer) => layer.editing.disable());
   },
 
   enable() {
@@ -79,7 +88,9 @@ L.DistortableCollection.Edit = L.Handler.extend({
     const keymap = this.options.keymap;
     const handlerName = keymap[e.key];
 
-    if (!this[handlerName]) { return; }
+    if (!this[handlerName]) {
+      return;
+    }
 
     if (this._group.anyCollected()) {
       this[handlerName].call(this);
@@ -87,8 +98,11 @@ L.DistortableCollection.Edit = L.Handler.extend({
   },
 
   _singleClick(e) {
-    if (e.type === 'singleclick') { this._decollectAll(e); }
-    else { return; }
+    if (e.type === 'singleclick') {
+      this._decollectAll(e);
+    } else {
+      return;
+    }
   },
 
   _singleClickListeners() {
@@ -106,7 +120,9 @@ L.DistortableCollection.Edit = L.Handler.extend({
   _decollectAll(e) {
     let oe;
 
-    if (e) { oe = e.originalEvent; }
+    if (e) {
+      oe = e.originalEvent;
+    }
     /**
      * prevents image deselection following the 'boxcollectend' event - note 'shift' must not be released until dragging is complete
      * also prevents deselection following a click on a disabled img by differentiating it from the map
@@ -122,11 +138,15 @@ L.DistortableCollection.Edit = L.Handler.extend({
 
     this._removeToolbar();
 
-    if (e) { L.DomEvent.stopPropagation(e); }
+    if (e) {
+      L.DomEvent.stopPropagation(e);
+    }
   },
 
   _unlockGroup() {
-    if (!this.hasTool(L.UnlockAction)) { return; }
+    if (!this.hasTool(L.UnlockAction)) {
+      return;
+    }
 
     this._group.eachLayer((layer) => {
       if (this._group.isCollected(layer)) {
@@ -139,10 +159,12 @@ L.DistortableCollection.Edit = L.Handler.extend({
   },
 
   _lockGroup() {
-    if (!this.hasTool(L.LockAction)) { return; }
+    if (!this.hasTool(L.LockAction)) {
+      return;
+    }
 
     this._group.eachLayer((layer) => {
-      if (this._group.isCollected(layer) ) {
+      if (this._group.isCollected(layer)) {
         const edit = layer.editing;
         edit._lock();
         // map.addLayer also deselects the image, so we reselect here
@@ -158,7 +180,9 @@ L.DistortableCollection.Edit = L.Handler.extend({
     this._group.eachLayer((layer) => {
       const edit = layer.editing;
 
-      if (layer.isSelected()) { layer.deselect(); }
+      if (layer.isSelected()) {
+        layer.deselect();
+      }
 
       const zoom = map.getZoom();
       const center = map.getCenter();
@@ -166,19 +190,25 @@ L.DistortableCollection.Edit = L.Handler.extend({
 
       imgBounds = map._latLngBoundsToNewLayerBounds(imgBounds, zoom, center);
       if (box.intersects(imgBounds) && edit.enabled()) {
-        if (!this.toolbar) { this._addToolbar(); }
+        if (!this.toolbar) {
+          this._addToolbar();
+        }
         L.DomUtil.addClass(layer.getElement(), 'collected');
       }
     });
   },
 
   _removeGroup(e) {
-    if (!this.hasTool(L.DeleteAction)) { return; }
+    if (!this.hasTool(L.DeleteAction)) {
+      return;
+    }
 
     const layersToRemove = this._group._toRemove();
     const n = layersToRemove.length;
 
-    if (n === 0) { return; }
+    if (n === 0) {
+      return;
+    }
 
     const choice = L.DomUtil.confirmDeletes(n);
 
@@ -191,7 +221,9 @@ L.DistortableCollection.Edit = L.Handler.extend({
       }
     }
 
-    if (e) { L.DomEvent.stopPropagation(e); }
+    if (e) {
+      L.DomEvent.stopPropagation(e);
+    }
   },
 
   cancelExport() {
@@ -206,11 +238,15 @@ L.DistortableCollection.Edit = L.Handler.extend({
     const group = this._group;
     const map = group._map;
 
-    if (group.options.suppressToolbar || this.toolbar) { return; }
-    this.toolbar = L.distortableImage.controlBar({
-      actions: this.editActions,
-      position: 'topleft',
-    }).addTo(map, group);
+    if (group.options.suppressToolbar || this.toolbar) {
+      return;
+    }
+    this.toolbar = L.distortableImage
+      .controlBar({
+        actions: this.editActions,
+        position: 'topleft',
+      })
+      .addTo(map, group);
   },
 
   _removeToolbar() {
@@ -224,7 +260,7 @@ L.DistortableCollection.Edit = L.Handler.extend({
   },
 
   hasTool(value) {
-    return this.editActions.some(action => action === value);
+    return this.editActions.some((action) => action === value);
   },
 
   addTool(value) {
@@ -251,7 +287,9 @@ L.DistortableCollection.Edit = L.Handler.extend({
   },
 
   startExport() {
-    if (!this.hasTool(L.ExportAction)) { return; }
+    if (!this.hasTool(L.ExportAction)) {
+      return;
+    }
 
     return new Promise((resolve) => {
       const opts = this._exportOpts;
@@ -300,11 +338,13 @@ L.DistortableCollection.Edit = L.Handler.extend({
         this.updateInterval = setInterval(() => {
           const reqOpts = {method: 'GET'};
           const req = new Request(`${statusUrl}?${Date.now()}`, reqOpts);
-          fetch(req).then((res) => {
-            if (res.ok) {
-              return res.text();
-            }
-          }).then(opts.updater);
+          fetch(req)
+            .then((res) => {
+              if (res.ok) {
+                return res.text();
+              }
+            })
+            .then(opts.updater);
         }, opts.frequency);
       };
 
@@ -317,11 +357,13 @@ L.DistortableCollection.Edit = L.Handler.extend({
 
         const reqOpts = {method: 'POST', body: form};
         const req = new Request(mergedOpts.exportStartUrl, reqOpts);
-        fetch(req).then((res) => {
-          if (res.ok) {
-            return res.text();
-          }
-        }).then(mergedOpts.handleStatusRes);
+        fetch(req)
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then(mergedOpts.handleStatusRes);
       };
 
       // If the user has passed collection property

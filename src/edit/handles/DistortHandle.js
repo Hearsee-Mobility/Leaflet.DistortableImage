@@ -21,6 +21,6 @@ L.DistortHandle = L.EditHandle.extend({
   },
 });
 
-L.distortHandle = function(overlay, idx, options) {
+L.distortHandle = function (overlay, idx, options) {
   return new L.DistortHandle(overlay, idx, options);
 };

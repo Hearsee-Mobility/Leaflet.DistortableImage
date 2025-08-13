@@ -10,14 +10,7 @@ opacities = opacities.map((o) => {
         html: o,
         tooltip: 'Opacity ' + o + '%',
         className: 'leaflet-toolbar-icon-vertical',
-        style:
-          'background-color:rgb(' +
-          (100 - o) +
-          '%,' +
-          (100 - o) +
-          '%,' +
-          (100 - o) +
-          '%);',
+        style: 'background-color:rgb(' + (100 - o) + '%,' + (100 - o) + '%,' + (100 - o) + '%);',
       },
     },
     addHooks() {
@@ -56,21 +49,10 @@ L.OpacitiesToolbar2 = L.Toolbar2.extend({
     // if only 'mouseup' is silenced, then the map gets stuck in a halfway
     // state because it receives a 'mousedown' event and is waiting for the
     // corresponding 'mouseup' event.
-    this._disabledEvents = [
-      'click',
-      'mousemove',
-      'dblclick',
-      'mousedown',
-      'mouseup',
-      'touchstart',
-    ];
+    this._disabledEvents = ['click', 'mousemove', 'dblclick', 'mousedown', 'mouseup', 'touchstart'];
 
     for (j = 0, m = this._disabledEvents.length; j < m; j++) {
-      L.DomEvent.on(
-        this._ul,
-        this._disabledEvents[j],
-        L.DomEvent.stopPropagation
-      );
+      L.DomEvent.on(this._ul, this._disabledEvents[j], L.DomEvent.stopPropagation);
     }
 
     /* Instantiate each toolbar action and add its corresponding toolbar icon. */

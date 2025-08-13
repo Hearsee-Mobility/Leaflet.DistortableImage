@@ -3,7 +3,6 @@ L.DistortableImage = L.DistortableImage || {};
 L.distortableImage = L.DistortableImage;
 
 L.DistortableImage.Keymapper = L.Handler.extend({
-
   options: {
     position: 'topright',
   },
@@ -73,18 +72,18 @@ L.DistortableImage.Keymapper = L.Handler.extend({
   _setMapper(container, wrap, button) {
     this._keymapper = L.control({position: this.options.position});
 
-    this._keymapper.onAdd = function() {
+    this._keymapper.onAdd = function () {
       container.appendChild(wrap);
       wrap.insertAdjacentHTML(
-          'beforeend',
-          '<table><tbody>' +
+        'beforeend',
+        '<table><tbody>' +
           '<hr id="keymapper-hr">' +
           /* eslint-disable */
           '<tr><td><div class="left"><span>Rotate Mode</span></div><div class="right"><kbd>R</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>RotateScale Mode</span></div><div class="right"><kbd>r</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Scale Mode</span></div><div class="right"><kbd>s</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Distort Mode</span></div><div class="right"><kbd>d</kbd></div></td></tr>' +
-          '<tr><td><div class="left"><span>Drag Mode</span></div><div class="right"><kbd>D</kbd></div></td></tr>' +   
+          '<tr><td><div class="left"><span>Drag Mode</span></div><div class="right"><kbd>D</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Lock (Mode) / Unlock Image</span></div><div class="right"><kbd>l</kbd>\xa0<kbd>u</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Stack up / down</span></div><div class="right"><kbd>q</kbd>\xa0<kbd>a</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Add / Remove Image Border</span></div><div class="right"><kbd>b</kbd></div></td></tr>' +
@@ -92,7 +91,7 @@ L.DistortableImage.Keymapper = L.Handler.extend({
           '<tr><td><div class="left"><span>Deselect All</span></div><div class="right"><kbd>esc</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Delete Image(s)</span></div><div class="right"><kbd>delete</kbd>\xa0<kbd>backspace</kbd></div></td></tr>' +
           '<tr><td><div class="left"><span>Export Image(s)</span></div><div class="right"><kbd>e</kbd></div></td></tr>' +
-          '</tbody></table>'
+          '</tbody></table>',
       );
       /* eslint-enable */
       container.appendChild(button);
@@ -105,28 +104,25 @@ L.DistortableImage.Keymapper = L.Handler.extend({
   _toggleKeymapper(e) {
     e.preventDefault();
 
-    this._container.className = (
-      this._container.className === 'ldi-keymapper leaflet-control' ?
-        'ldi-keymapper-hide leaflet-control' :
-        'ldi-keymapper leaflet-control'
-    );
+    this._container.className =
+      this._container.className === 'ldi-keymapper leaflet-control'
+        ? 'ldi-keymapper-hide leaflet-control'
+        : 'ldi-keymapper leaflet-control';
 
-    this._scrollWrapper.style.display = (
-      this._scrollWrapper.style.display === 'none' ? 'block' : 'none'
-    );
+    this._scrollWrapper.style.display =
+      this._scrollWrapper.style.display === 'none' ? 'block' : 'none';
 
-    this._toggler.innerHTML = (
-      this._toggler.innerHTML === 'close' ?
-        L.IconUtil.create('keyboard_open') :
-        'close'
-    );
+    this._toggler.innerHTML =
+      this._toggler.innerHTML === 'close' ? L.IconUtil.create('keyboard_open') : 'close';
 
     L.IconUtil.toggleTitle(this._toggler, 'Show keymap', 'Hide keymap');
     L.DomUtil.toggleClass(this._toggler, 'close-icon');
   },
 
   _injectIconSet() {
-    if (document.querySelector('#keymapper-iconset')) { return; }
+    if (document.querySelector('#keymapper-iconset')) {
+      return;
+    }
 
     const el = L.DomUtil.create('div', '');
     el.id = 'keymapper-iconset';
@@ -140,11 +136,9 @@ L.DistortableImage.Keymapper = L.Handler.extend({
 });
 
 L.DistortableImage.Keymapper.addInitHook(() => {
-  L.DistortableImage.Keymapper.prototype._n = (
-    L.DistortableImage.Keymapper.prototype._n ?
-    L.DistortableImage.Keymapper.prototype._n + 1 :
-    1
-  );
+  L.DistortableImage.Keymapper.prototype._n = L.DistortableImage.Keymapper.prototype._n
+    ? L.DistortableImage.Keymapper.prototype._n + 1
+    : 1;
   // dont enable keymapper for mobile
   if (L.DistortableImage.Keymapper.prototype._n === 1 && !L.Browser.mobile) {
     this.enable();

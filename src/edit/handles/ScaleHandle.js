@@ -23,7 +23,9 @@ L.ScaleHandle = L.EditHandle.extend({
      * this enables preventing scaling to zero, but we might also add an overall scale limit
      */
 
-    if (!edgeMinWidth) { edgeMinWidth = 50; } /* just in case */
+    if (!edgeMinWidth) {
+      edgeMinWidth = 50;
+    } /* just in case */
     const corner1 = map.latLngToLayerPoint(overlay.getCorner(0));
     const corner2 = map.latLngToLayerPoint(overlay.getCorner(1));
     const w = Math.abs(corner1.x - corner2.x);
@@ -46,6 +48,6 @@ L.ScaleHandle = L.EditHandle.extend({
   },
 });
 
-L.scaleHandle = function(overlay, idx, options) {
+L.scaleHandle = function (overlay, idx, options) {
   return new L.ScaleHandle(overlay, idx, options);
 };

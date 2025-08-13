@@ -85,7 +85,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
         singleclickoff: this._resetClickListeners,
         singleclick: this._singleClick,
       },
-      this
+      this,
     );
 
     /**
@@ -109,7 +109,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
         singleclickoff: this._resetClickListeners,
         singleclick: this._singleClick,
       },
-      this
+      this,
     );
     L.DomEvent.off(map, 'click', this.deselect, this);
 
@@ -121,20 +121,14 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     L.ImageOverlay.prototype.onRemove.call(this, map);
 
     L.DomEvent.on(this.getElement(), 'mouseout', this.closeTooltip, this);
-    L.DomEvent.off(
-      this.getElement(),
-      'mousemove',
-      this.deactivateTooltip,
-      this
-    );
+    L.DomEvent.off(this.getElement(), 'mousemove', this.deactivateTooltip, this);
   },
 
   _initImageDimensions() {
     const map = this._map;
     const originalImageWidth = L.DomUtil.getStyle(this.getElement(), 'width');
     const originalImageHeight = L.DomUtil.getStyle(this.getElement(), 'height');
-    const aspectRatio =
-      parseInt(originalImageWidth) / parseInt(originalImageHeight);
+    const aspectRatio = parseInt(originalImageWidth) / parseInt(originalImageHeight);
     const imageHeight = this.options.height;
     const imageWidth = parseInt(aspectRatio * imageHeight);
     const center = map.project(map.getCenter());
@@ -363,11 +357,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     }
 
     for (i = 0; i < 4; i++) {
-      p = map
-        .project(this.getCorner(i))
-        .subtract(center)
-        .multiplyBy(scale)
-        .add(center);
+      p = map.project(this.getCorner(i)).subtract(center).multiplyBy(scale).add(center);
       scaledCorners[i] = map.unproject(p);
     }
 
@@ -428,7 +418,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
       p = map.project(this.getCorner(i)).subtract(center);
       q = L.point(
         Math.cos(angle) * p.x - Math.sin(angle) * p.y,
-        Math.sin(angle) * p.x + Math.cos(angle) * p.y
+        Math.sin(angle) * p.x + Math.cos(angle) * p.y,
       );
       corners[i] = map.unproject(q.add(center));
     }
@@ -497,8 +487,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     const map = this._map;
     const image = this.getElement();
     const latLngToLayerPoint = L.bind(map.latLngToLayerPoint, map);
-    const transformMatrix =
-      this._calculateProjectiveTransform(latLngToLayerPoint);
+    const transformMatrix = this._calculateProjectiveTransform(latLngToLayerPoint);
     const topLeft = latLngToLayerPoint(this.getCorner(0));
     const warp = L.DomUtil.getMatrixString(transformMatrix);
     const translation = this._getTranslateString(topLeft);
@@ -529,9 +518,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     const latLngToNewLayerPoint = function (latlng) {
       return map._latLngToNewLayerPoint(latlng, event.zoom, event.center);
     };
-    const transformMatrix = this._calculateProjectiveTransform(
-      latLngToNewLayerPoint
-    );
+    const transformMatrix = this._calculateProjectiveTransform(latLngToNewLayerPoint);
     const topLeft = latLngToNewLayerPoint(this.getCorner(0));
     const warp = L.DomUtil.getMatrixString(transformMatrix);
     const translation = this._getTranslateString(topLeft);
@@ -553,9 +540,12 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   // image (vertex) centroid calculation
   getCenter() {
     const map = this._map;
-    const reduce = this.getCorners().reduce(function (agg, corner) {
-      return agg.add(map.project(corner));
-    }, L.point(0, 0));
+    const reduce = this.getCorners().reduce(
+      function (agg, corner) {
+        return agg.add(map.project(corner));
+      },
+      L.point(0, 0),
+    );
     return map.unproject(reduce.divideBy(4));
   },
 
@@ -600,7 +590,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
       w,
       h,
       c[3].x,
-      c[3].y
+      c[3].y,
     );
   },
 });

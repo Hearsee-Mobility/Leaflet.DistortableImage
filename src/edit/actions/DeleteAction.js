@@ -4,20 +4,16 @@ L.DeleteAction = L.EditAction.extend({
     const use = 'delete_forever';
     let tooltip;
     /**
-      * we can tell whether the overlay is an instance of `L.DistortableImageOverlay` or `L.DistortableCollection` bc only
-      * the former should have `parentGroup` defined on it. From there we call the apporpriate keybindings and methods.
-      */
+     * we can tell whether the overlay is an instance of `L.DistortableImageOverlay` or `L.DistortableCollection` bc only
+     * the former should have `parentGroup` defined on it. From there we call the apporpriate keybindings and methods.
+     */
     if (edit instanceof L.DistortableImage.Edit) {
       tooltip = overlay.options.translation.deleteImage;
       // backspace windows / delete mac
-      L.DistortableImage.action_map.Backspace = (
-        edit._mode === 'lock' ? '' : '_removeOverlay'
-      );
+      L.DistortableImage.action_map.Backspace = edit._mode === 'lock' ? '' : '_removeOverlay';
     } else {
       tooltip = overlay.options.translation.deleteImages;
-      L.DistortableImage.group_action_map.Backspace = (
-        edit._mode === 'lock' ? '' : '_removeGroup'
-      );
+      L.DistortableImage.group_action_map.Backspace = edit._mode === 'lock' ? '' : '_removeGroup';
     }
 
     options = options || {};
@@ -34,7 +30,10 @@ L.DeleteAction = L.EditAction.extend({
   addHooks() {
     const edit = this._overlay.editing;
 
-    if (edit instanceof L.DistortableImage.Edit) { edit._removeOverlay(); }
-    else { edit._removeGroup(); }
+    if (edit instanceof L.DistortableImage.Edit) {
+      edit._removeOverlay();
+    } else {
+      edit._removeGroup();
+    }
   },
 });

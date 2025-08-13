@@ -6,20 +6,11 @@ L.EXIF = function getEXIFdata(img) {
     let altitude;
 
     /* If the lat/lng is available. */
-    if (
-      typeof GPS.GPSLatitude !== 'undefined' &&
-      typeof GPS.GPSLongitude !== 'undefined'
-    ) {
+    if (typeof GPS.GPSLatitude !== 'undefined' && typeof GPS.GPSLongitude !== 'undefined') {
       // sadly, encoded in [degrees,minutes,seconds]
       // primitive value = GPS.GPSLatitude[x].numerator
-      let lat =
-        GPS.GPSLatitude[0] +
-        GPS.GPSLatitude[1] / 60 +
-        GPS.GPSLatitude[2] / 3600;
-      let lng =
-        GPS.GPSLongitude[0] +
-        GPS.GPSLongitude[1] / 60 +
-        GPS.GPSLongitude[2] / 3600;
+      let lat = GPS.GPSLatitude[0] + GPS.GPSLatitude[1] / 60 + GPS.GPSLatitude[2] / 3600;
+      let lng = GPS.GPSLongitude[0] + GPS.GPSLongitude[1] / 60 + GPS.GPSLongitude[2] / 3600;
 
       if (GPS.GPSLatitudeRef !== 'N') {
         lat = lat * -1;
@@ -36,13 +27,11 @@ L.EXIF = function getEXIFdata(img) {
     // "T" refers to "True north", so -90.
     if (GPS.GPSImgDirectionRef === 'T') {
       angle =
-        (Math.PI / 180) *
-        (GPS.GPSImgDirection.numerator / GPS.GPSImgDirection.denominator - 90);
+        (Math.PI / 180) * (GPS.GPSImgDirection.numerator / GPS.GPSImgDirection.denominator - 90);
       // "M" refers to "Magnetic north"
     } else if (GPS.GPSImgDirectionRef === 'M') {
       angle =
-        (Math.PI / 180) *
-        (GPS.GPSImgDirection.numerator / GPS.GPSImgDirection.denominator - 90);
+        (Math.PI / 180) * (GPS.GPSImgDirection.numerator / GPS.GPSImgDirection.denominator - 90);
     } else {
       console.log('No compass data found');
     }
@@ -62,19 +51,11 @@ L.EXIF = function getEXIFdata(img) {
     }
 
     /* If there is altitude data */
-    if (
-      typeof GPS.GPSAltitude !== 'undefined' &&
-      typeof GPS.GPSAltitudeRef !== 'undefined'
-    ) {
+    if (typeof GPS.GPSAltitude !== 'undefined' && typeof GPS.GPSAltitudeRef !== 'undefined') {
       // Attempt to use GPS altitude:
       // (may eventually need to find EXIF field of view for correction)
-      if (
-        typeof GPS.GPSAltitude !== 'undefined' &&
-        typeof GPS.GPSAltitudeRef !== 'undefined'
-      ) {
-        altitude =
-          GPS.GPSAltitude.numerator / GPS.GPSAltitude.denominator +
-          GPS.GPSAltitudeRef;
+      if (typeof GPS.GPSAltitude !== 'undefined' && typeof GPS.GPSAltitudeRef !== 'undefined') {
+        altitude = GPS.GPSAltitude.numerator / GPS.GPSAltitude.denominator + GPS.GPSAltitudeRef;
       } else {
         altitude = 0; // none
       }

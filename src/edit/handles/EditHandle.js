@@ -53,7 +53,7 @@ L.EditHandle = L.Marker.extend({
         drag: this._onHandleDrag,
         dragend: this._onHandleDragEnd,
       },
-      this
+      this,
     );
 
     this._handled._map.on('zoomend', this.updateHandle, this);
@@ -68,7 +68,7 @@ L.EditHandle = L.Marker.extend({
         drag: this._onHandleDrag,
         dragend: this._onHandleDragEnd,
       },
-      this
+      this,
     );
 
     if (this._handled._map) {
@@ -108,14 +108,8 @@ L.EditHandle = L.Marker.extend({
     const formerPoint = map.latLngToLayerPoint(latlngA);
     const newPoint = map.latLngToLayerPoint(latlngB);
 
-    const initialAngle = Math.atan2(
-      centerPoint.y - formerPoint.y,
-      centerPoint.x - formerPoint.x
-    );
-    const newAngle = Math.atan2(
-      centerPoint.y - newPoint.y,
-      centerPoint.x - newPoint.x
-    );
+    const initialAngle = Math.atan2(centerPoint.y - formerPoint.y, centerPoint.x - formerPoint.x);
+    const newAngle = Math.atan2(centerPoint.y - newPoint.y, centerPoint.x - newPoint.x);
 
     return newAngle - initialAngle;
   },

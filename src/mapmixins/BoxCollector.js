@@ -60,11 +60,15 @@ L.Map.BoxCollector = L.Map.BoxZoom.extend({
 
     this._startPoint = this._map.mouseEventToContainerPoint(e);
 
-    L.DomEvent.on(document, {
-      contextmenu: L.DomEvent.stop,
-      mousemove: this._onMouseMove,
-      mouseup: this._onMouseUp,
-    }, this);
+    L.DomEvent.on(
+      document,
+      {
+        contextmenu: L.DomEvent.stop,
+        mousemove: this._onMouseMove,
+        mouseup: this._onMouseUp,
+      },
+      this,
+    );
   },
 
   _onMouseMove(e) {
@@ -97,11 +101,15 @@ L.Map.BoxCollector = L.Map.BoxZoom.extend({
     L.DomUtil.enableTextSelection();
     L.DomUtil.enableImageDrag();
 
-    L.DomEvent.off(document, {
-      contextmenu: L.DomEvent.stop,
-      mousemove: this._onMouseMove,
-      mouseup: this._onMouseUp,
-    }, this);
+    L.DomEvent.off(
+      document,
+      {
+        contextmenu: L.DomEvent.stop,
+        mousemove: this._onMouseMove,
+        mouseup: this._onMouseUp,
+      },
+      this,
+    );
   },
 
   _onMouseUp(e) {
@@ -111,17 +119,18 @@ L.Map.BoxCollector = L.Map.BoxZoom.extend({
 
     this._finish();
 
-    if (!this._moved) { return; }
+    if (!this._moved) {
+      return;
+    }
 
     // Postpone to next JS tick so internal click event handling
     // still see it as "moved".
     this._clearDeferredResetState();
-    this._resetStateTimeout = setTimeout(
-        L.Util.bind(this._resetState, this), 0);
+    this._resetStateTimeout = setTimeout(L.Util.bind(this._resetState, this), 0);
 
     let bounds = L.latLngBounds(
-        this._map.containerPointToLatLng(this._bounds.getBottomLeft()),
-        this._map.containerPointToLatLng(this._bounds.getTopRight())
+      this._map.containerPointToLatLng(this._bounds.getBottomLeft()),
+      this._map.containerPointToLatLng(this._bounds.getTopRight()),
     );
 
     const zoom = this._map.getZoom();

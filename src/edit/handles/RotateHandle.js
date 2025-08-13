@@ -28,6 +28,6 @@ L.RotateHandle = L.EditHandle.extend({
   },
 });
 
-L.rotateHandle = function(overlay, idx, options) {
+L.rotateHandle = function (overlay, idx, options) {
   return new L.RotateHandle(overlay, idx, options);
 };

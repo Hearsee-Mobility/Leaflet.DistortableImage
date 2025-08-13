@@ -10,7 +10,7 @@ L.Map.DoubleClickZoom.include({
         click: this._fireIfSingle,
         dblclick: this._onDoubleClick,
       },
-      this
+      this,
     );
   },
 
@@ -20,7 +20,7 @@ L.Map.DoubleClickZoom.include({
         click: this._fireIfSingle,
         dblclick: this._onDoubleClick,
       },
-      this
+      this,
     );
   },
 

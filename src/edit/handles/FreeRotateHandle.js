@@ -18,10 +18,14 @@ L.FreeRotateHandle = L.EditHandle.extend({
     const angle = this.calculateAngleDelta(formerLatLng, newLatLng);
     const scale = this._calculateScalingFactor(formerLatLng, newLatLng);
 
-    if (angle !== 0) { overlay.rotateBy(angle, 'rad'); }
+    if (angle !== 0) {
+      overlay.rotateBy(angle, 'rad');
+    }
 
     let edgeMinWidth = overlay.edgeMinWidth;
-    if (!edgeMinWidth) { edgeMinWidth = 50; } /* just in case */
+    if (!edgeMinWidth) {
+      edgeMinWidth = 50;
+    } /* just in case */
 
     const corner1 = map.latLngToContainerPoint(overlay.getCorner(0));
     const corner2 = map.latLngToContainerPoint(overlay.getCorner(1));

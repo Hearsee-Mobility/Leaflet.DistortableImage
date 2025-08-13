@@ -41,7 +41,9 @@ L.EditAction = L.Toolbar2.Action.extend({
 
     this._link.setAttribute('href', '#');
     this._link.setAttribute('title', iconOptions.tooltip);
-    if (style) { this._link.setAttribute('style', style); };
+    if (style) {
+      this._link.setAttribute('style', style);
+    }
     this._link.setAttribute('role', 'button');
 
     L.DomUtil.addClass(this._link, this.constructor.baseClass);
@@ -61,7 +63,9 @@ L.EditAction = L.Toolbar2.Action.extend({
     L.DomEvent.on(this._link, 'click', this.enable, this);
     L.DomEvent.on(this._overlay, 'update', () => {
       const match = this._link.innerHTML.match(/xlink:href="#restore"/);
-      if (match && match.length === 1) { this._enableAction(); }
+      if (match && match.length === 1) {
+        this._enableAction();
+      }
     });
 
     /* Add secondary toolbar */
@@ -92,6 +96,6 @@ L.EditAction = L.Toolbar2.Action.extend({
   },
 });
 
-L.editAction = function(map, overlay, options) {
+L.editAction = function (map, overlay, options) {
   return new L.EditAction(map, overlay, options);
 };

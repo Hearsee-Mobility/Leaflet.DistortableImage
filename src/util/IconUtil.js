@@ -10,8 +10,12 @@ L.IconUtil = {
     }
 
     return (
-      '<svg class="ldi-icon ldi-' + ref + '"role="img" focusable="false">' +
-      '<use xlink:href="#' + ref + '"></use>' +
+      '<svg class="ldi-icon ldi-' +
+      ref +
+      '"role="img" focusable="false">' +
+      '<use xlink:href="#' +
+      ref +
+      '"></use>' +
       '</svg>'
     );
   },

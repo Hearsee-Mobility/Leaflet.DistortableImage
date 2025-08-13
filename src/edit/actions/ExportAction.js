@@ -46,29 +46,34 @@ L.ExportAction = L.EditAction.extend({
     this.mouseEnterHandler = this.handleMouseEnter.bind(this);
     this.mouseLeaveHandler = this.handleMouseLeave.bind(this);
 
-    L.DomEvent.on(exportTool, 'click', function() {
-      if (!this.isExporting) {
-        this.isExporting = true;
-        this.renderExportIcon();
+    L.DomEvent.on(
+      exportTool,
+      'click',
+      function () {
+        if (!this.isExporting) {
+          this.isExporting = true;
+          this.renderExportIcon();
 
-        setTimeout(this.attachMouseEventListeners.bind(this, exportTool), 100);
-        edit.runExporter().then(
-            function() {
+          setTimeout(this.attachMouseEventListeners.bind(this, exportTool), 100);
+          edit.runExporter().then(
+            function () {
               this.resetState();
               this.detachMouseEventListeners(exportTool);
-            }.bind(this)
-        );
-      } else {
-        // Clicking on the export icon after export has started will be ignored
-        if (this.mouseLeaveSkip) {
-          return;
-        }
+            }.bind(this),
+          );
+        } else {
+          // Clicking on the export icon after export has started will be ignored
+          if (this.mouseLeaveSkip) {
+            return;
+          }
 
-        this.resetState();
-        this.detachMouseEventListeners(exportTool);
-        edit.cancelExport();
-      }
-    }, this);
+          this.resetState();
+          this.detachMouseEventListeners(exportTool);
+          edit.cancelExport();
+        }
+      },
+      this,
+    );
   },
 
   resetState() {

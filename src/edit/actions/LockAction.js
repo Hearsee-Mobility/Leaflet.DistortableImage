@@ -30,7 +30,10 @@ L.LockAction = L.EditAction.extend({
   addHooks() {
     const edit = this._overlay.editing;
 
-    if (edit instanceof L.DistortableImage.Edit) { edit._toggleLockMode(); }
-    else { edit._lockGroup(); }
+    if (edit instanceof L.DistortableImage.Edit) {
+      edit._toggleLockMode();
+    } else {
+      edit._lockGroup();
+    }
   },
 });

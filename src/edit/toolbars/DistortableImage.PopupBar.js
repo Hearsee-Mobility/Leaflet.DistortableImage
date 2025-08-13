@@ -37,11 +37,11 @@ L.DistortableImage.PopupBar = L.Toolbar2.Popup.extend({
   },
 });
 
-L.distortableImage.popupBar = function(latlng, options) {
+L.distortableImage.popupBar = function (latlng, options) {
   return new L.DistortableImage.PopupBar(latlng, options);
 };
 
-L.DistortableImageOverlay.addInitHook(function() {
+L.DistortableImageOverlay.addInitHook(function () {
   /** Default actions */
   this.ACTIONS = [
     L.DragAction,

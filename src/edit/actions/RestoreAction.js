@@ -17,10 +17,14 @@ L.RestoreAction = L.EditAction.extend({
   addHooks() {
     const ov = this._overlay;
 
-    L.DomEvent.on(ov, {
-      edit: this._enableAction,
-      restore: this._disableAction,
-    }, this);
+    L.DomEvent.on(
+      ov,
+      {
+        edit: this._enableAction,
+        restore: this._disableAction,
+      },
+      this,
+    );
 
     ov.restore();
   },
