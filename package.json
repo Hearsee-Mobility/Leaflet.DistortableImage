@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/Hearsee-Mobility/Leaflet.DistortableImage",
   "dependencies": {
-    "exif-js": "^2.3.0",
+    "exifreader": "4.48.1",
     "glfx": "0.0.4",
     "leaflet-google-places-autocomplete": "^0.0.9",
     "leaflet-toolbar": "0.4.0-alpha.2",

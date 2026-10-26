@@ -728,8 +728,20 @@ declare module 'leaflet' {
     function getNestedVal(obj: any, ...keys: string[]): any;
   }
 
-  // EXIF function type (used by GeolocateAction)
-  function EXIF(image: HTMLImageElement): () => void;
+  // EXIF geolocation reader (used by GeolocateAction)
+  interface ExifGeolocation {
+    latitude?: number;
+    longitude?: number;
+    altitude?: number;
+    angle: number;
+  }
+
+  const EXIF: {
+    geolocationTags: string[];
+    orientationDegrees: Record<number, number>;
+    readTags(imageData: ArrayBuffer): any;
+    readGeolocation(tags: any): ExifGeolocation | null;
+  };
 
   // OpacitiesAction specific types
   namespace OpacitiesAction {
@@ -755,9 +767,9 @@ declare module 'leaflet' {
   }
 }
 
-// Additional external module declarations for EXIF
-declare const EXIF: {
-  getData(image: HTMLImageElement, callback: () => void): void;
+// ExifReader is loaded as a global script alongside this plugin
+declare const ExifReader: {
+  load(data: ArrayBuffer, options?: object): any;
 };
 
 // Type guards for distinguishing between overlay types
