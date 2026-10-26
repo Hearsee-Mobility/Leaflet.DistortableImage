@@ -386,6 +386,14 @@ describe('L.DistortableImageOverlay', function() {
     });
   });
 
+  describe('tooltip', function() {
+    it('Renders tooltip text literally instead of parsing it as HTML', function() {
+      ov.tooltipText = '<img src="x" onerror="alert(1)">';
+      ov.activateTooltip();
+      expect(ov.getTooltip().getElement().querySelector('img')).to.equal(null);
+    });
+  });
+
   describe('#setAngle', function() {
     it('Sets the image\'s rotation angle in the specified units, otherwise in degrees', function() {
       ov.setAngle(45);

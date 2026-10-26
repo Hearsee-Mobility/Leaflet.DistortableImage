@@ -134,7 +134,7 @@ const renderThumbnails = (thumbnails = [], url, fullResImgs) => {
     fetchedFromUrl.innerHTML = 'this Internet Archive Collection';
     fetchedFrom.appendChild(fetchedFromUrl);
     const fileName = document.createElement('p');
-    fileName.innerHTML = file.name;
+    fileName.textContent = file.name;
     fileName.classList.add('m-0');
     fileName.style.fontSize = '12px';
 
