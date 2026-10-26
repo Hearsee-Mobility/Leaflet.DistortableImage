@@ -68,12 +68,12 @@
     "@commitlint/config-conventional": "^19.4.1",
     "@semantic-release/changelog": "^6.0.3",
     "@types/leaflet": "^1.9.20",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.71.1",
+    "@typescript-eslint/parser": "^8.71.1",
     "acorn": "^8.7.1",
     "chai": "^4.2.0",
     "cross-env": "^7.0.2",
-    "eslint": "^8.16.0",
+    "eslint": "^8.57.1",
     "eslint-config-google": "^0.14.0",
     "glob": "^8.0.3",
     "husky": "^9.1.7",
@@ -86,12 +86,12 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sinon": "^1.0.5",
     "leaflet": "1.x",
-    "mocha": "^10.0.0",
+    "mocha": "^12.0.3",
     "prettier": "^3.6.2",
-    "semantic-release": "^24.2.6",
+    "semantic-release": "^25.0.9",
     "sinon": "^14.0.0",
     "typescript": "^5.8.3",
-    "vite": "^7.0.5"
+    "vite": "^7.3.7"
   },
   "peerDependencies": {
     "leaflet": "1.x"
