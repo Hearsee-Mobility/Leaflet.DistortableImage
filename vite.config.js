@@ -23,7 +23,7 @@ export default defineConfig(({mode}) => ({
         'leaflet-toolbar',
         'webgl-distort',
         'glfx',
-        'exif-js',
+        'exifreader',
       ],
       output: {
         globals: {
@@ -31,7 +31,7 @@ export default defineConfig(({mode}) => ({
           'leaflet-toolbar': 'L.Toolbar',
           'webgl-distort': 'WebGLDistort',
           glfx: 'fx',
-          'exif-js': 'EXIF',
+          exifreader: 'ExifReader',
         },
         extend: true,
       },

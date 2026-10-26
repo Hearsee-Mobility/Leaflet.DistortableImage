@@ -16,6 +16,10 @@ L.GeolocateAction = L.EditAction.extend({
   addHooks() {
     const image = this._overlay.getElement();
 
-    EXIF.getData(image, L.EXIF(image));
+    return fetch(image.src)
+      .then((response) => response.arrayBuffer())
+      .then((imageData) => L.EXIF.readGeolocation(L.EXIF.readTags(imageData)))
+      .catch(() => null)
+      .then((geolocation) => console.log(geolocation || 'No EXIF geolocation data found'));
   },
 });

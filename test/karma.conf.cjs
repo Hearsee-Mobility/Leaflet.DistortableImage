@@ -22,6 +22,7 @@ module.exports = function (config) {
       'node_modules/leaflet-toolbar/dist/leaflet.toolbar.css',
       'node_modules/webgl-distort/dist/webgl-distort.js',
       'node_modules/glfx/glfx.js',
+      'node_modules/exifreader/dist/exif-reader.js',
       'node_modules/chai/chai.js',
       'src/util/*.js',
       'src/DistortableImageOverlay.js',

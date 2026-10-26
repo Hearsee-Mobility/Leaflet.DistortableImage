@@ -71,17 +71,3 @@ declare module 'glfx' {
   function canvas(): Canvas;
   function texture(image: HTMLImageElement | HTMLCanvasElement): Texture;
 }
-
-declare module 'exif-js' {
-  interface ExifData {
-    [key: string]: any;
-    Orientation?: number;
-  }
-
-  export function getData(
-    image: HTMLImageElement,
-    callback: (this: HTMLImageElement) => void
-  ): void;
-  export function getTag(image: HTMLImageElement, tag: string): any;
-  export function getAllTags(image: HTMLImageElement): ExifData;
-}
