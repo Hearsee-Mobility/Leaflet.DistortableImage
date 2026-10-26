@@ -15,7 +15,8 @@
     "serve:dev": "vite",
     "watch:dev": "vite build --watch",
     "test": "npx karma start test/karma.conf.cjs",
-    "lint": "eslint",
+    "lint": "eslint src test examples/js",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "format": "prettier src/ --write"
   },

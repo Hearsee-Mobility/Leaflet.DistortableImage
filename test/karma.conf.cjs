@@ -91,10 +91,18 @@ module.exports = function (config) {
     // - Chrome
     // - ChromeCanary
     // - ChromeHeadless
-    browsers: ['ChromeHeadless'],
+    browsers: [process.env.CI ? 'ChromeHeadlessNoSandbox' : 'ChromeHeadless'],
+
+    // GitHub's Ubuntu 24.04 runners block the user namespaces Chrome's sandbox needs
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox'],
+      },
+    },
 
     // If browser does not capture in given timeout [ms], kill it
-    captureTimeout: 5000,
+    captureTimeout: 30000,
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

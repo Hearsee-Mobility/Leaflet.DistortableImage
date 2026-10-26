@@ -6,7 +6,7 @@ export class Paginator {
     this.url = url;
     this.fetchedImages = fetchedImages;
     // number of images (thumbnails and fullres files) in response data
-    this.count = this.fetchedImages.filter((file)=> { if (file.format === 'PNG' || file.format === 'JPEG' || file.format.includes('Thumb')) return file}).length;
+    this.count = this.fetchedImages.filter((file)=> { if (file.format === 'PNG' || file.format === 'JPEG' || file.format.includes('Thumb')) return file;}).length;
     this.currPage = 0;
     this.imageThumbnails = this.fetchedImages.filter(file => file.source === 'derivative');
     this.fullResImages = this.fetchedImages.filter(file => file.format === 'PNG' || file.format === 'JPEG');
