@@ -45,6 +45,18 @@ let map;
     'src': 'https://s3.amazonaws.com/grassrootsmapping/warpables/320983/test.png'},
     ];
 
+    const exporterUrl = 'https://34.74.118.242/api/v2/export/';
+
+    const isExporterUrl = (candidateUrl) => {
+      try {
+        const parsedUrl = new URL(candidateUrl);
+        const isWebProtocol = ['http:', 'https:'].includes(parsedUrl.protocol);
+        return isWebProtocol && parsedUrl.hostname === new URL(exporterUrl).hostname;
+      } catch (error) {
+        return false;
+      }
+    };
+
     // customize the function that starts up the export
     const fetchStatusUrl = (mergedOpts) => {
       const form = new FormData();
@@ -66,6 +78,9 @@ let map;
     // this may be overridden to integrate with any UI
     const handleStatusRes = (data) => {
       statusUrl = data.split('please visit, ')[1];
+      if (!isExporterUrl(statusUrl)) {
+        return;
+      }
 
       /*
         if we are getting status updates, repeatedly fetch the status.json:
@@ -90,8 +105,8 @@ let map;
         collection: json, // here we override the image data sent with a custom set
         fetchStatusUrl: fetchStatusUrl,
         handleStatusRes: handleStatusRes,
-        exportUrl: '//34.74.118.242/api/v2/export/', // used to
-        exportStartUrl: '//34.74.118.242/api/v2/export/', // used to initiate the export
+        exportUrl: exporterUrl, // used to
+        exportStartUrl: exporterUrl, // used to initiate the export
 
         // From this alternative exporter, we'll get a response like:
         // "Your Image is exporting, to load Image please visit, http://34.74.118.242/api/v2/status/?pid=3d8233faa2ade0f0cee400fba1170890-7153"
