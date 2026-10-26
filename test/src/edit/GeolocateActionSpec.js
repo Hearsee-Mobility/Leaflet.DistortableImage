@@ -7,13 +7,14 @@ const geotaggedImageUrl = [
 ].join('');
 const untaggedImageUrl = 'data:image/jpeg;base64,/9j/2Q==';
 
-const readImageGeolocation = (imageUrl) => fetch(imageUrl)
-    .then((response) => response.arrayBuffer())
+const readImageGeolocation = (imageUrl) => L.EXIF.fetchMetadata(imageUrl)
     .then((imageData) => L.EXIF.readGeolocation(L.EXIF.readTags(imageData)));
 
-const activateGeolocateFor = (imageUrl) => L.GeolocateAction.prototype.addHooks.call({
-  _overlay: {getElement: () => ({src: imageUrl})},
-});
+const activateGeolocateFor = (imageUrl) => {
+  const action = Object.create(L.GeolocateAction.prototype);
+  action._overlay = {getElement: () => ({src: imageUrl})};
+  return action.addHooks();
+};
 
 describe('L.EXIF', function() {
   it('Reads a signed latitude from the image GPS tags', function() {
@@ -45,6 +46,22 @@ describe('L.EXIF', function() {
       expect(geolocation).to.equal(null);
     });
   });
+
+  it('Returns no geolocation when the GPS tags have no coordinates', function() {
+    expect(L.EXIF.readGeolocation({gps: {Altitude: 150}})).to.equal(null);
+  });
+
+  it('Reads only the metadata prefix of a large image', function() {
+    return L.EXIF.fetchMetadata('/examples/large.jpg').then((imageData) => {
+      expect(imageData.byteLength).to.equal(L.EXIF.metadataPrefixBytes);
+    });
+  });
+
+  it('Reads the whole image when it is smaller than the metadata prefix', function() {
+    return L.EXIF.fetchMetadata(untaggedImageUrl).then((imageData) => {
+      expect(imageData.byteLength).to.equal(4);
+    });
+  });
 });
 
 describe('L.GeolocateAction', function() {
@@ -61,6 +78,12 @@ describe('L.GeolocateAction', function() {
   it('Logs the geolocation of the overlay image when activated', function() {
     return activateGeolocateFor(geotaggedImageUrl).then(() => {
       expect(consoleLog.calledWithMatch({altitude: 150})).to.equal(true);
+    });
+  });
+
+  it('Logs a load failure when the image request fails', function() {
+    return activateGeolocateFor('/examples/missing.jpg').then(() => {
+      expect(consoleLog.calledWith('Could not load image for geolocation:', 'HTTP 404')).to.equal(true);
     });
   });
 

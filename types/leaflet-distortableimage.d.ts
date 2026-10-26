@@ -739,6 +739,8 @@ declare module 'leaflet' {
   const EXIF: {
     geolocationTags: string[];
     orientationDegrees: Record<number, number>;
+    metadataPrefixBytes: number;
+    fetchMetadata(source: string): Promise<ArrayBuffer>;
     readTags(imageData: ArrayBuffer): any;
     readGeolocation(tags: any): ExifGeolocation | null;
   };

@@ -13,13 +13,25 @@ L.GeolocateAction = L.EditAction.extend({
     L.EditAction.prototype.initialize.call(this, map, overlay, options);
   },
 
-  addHooks() {
+  async addHooks() {
     const image = this._overlay.getElement();
+    let imageData;
 
-    return fetch(image.src)
-      .then((response) => response.arrayBuffer())
-      .then((imageData) => L.EXIF.readGeolocation(L.EXIF.readTags(imageData)))
-      .catch(() => null)
-      .then((geolocation) => console.log(geolocation || 'No EXIF geolocation data found'));
+    try {
+      imageData = await L.EXIF.fetchMetadata(image.src);
+    } catch (error) {
+      console.log('Could not load image for geolocation:', error.message);
+      return;
+    }
+
+    console.log(this._readGeolocation(imageData) || 'No EXIF geolocation data found');
+  },
+
+  _readGeolocation(imageData) {
+    try {
+      return L.EXIF.readGeolocation(L.EXIF.readTags(imageData));
+    } catch (error) {
+      return null;
+    }
   },
 });
