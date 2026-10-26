@@ -19,7 +19,7 @@
     "block-spacing": "off",
     "prefer-const": "off",
     "no-var": "off",
-    "max-len": ["error", {"code": 200}],
+    "max-len": ["error", {"code": 200, "ignoreStrings": true}],
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
     "camelcase": "off",

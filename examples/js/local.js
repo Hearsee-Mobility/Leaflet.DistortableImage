@@ -64,7 +64,7 @@ const getCornerBounds = (imgCollection) => {
   }
 
   return cornerBounds;
-}
+};
 
 // places image on tile
 function placeImage(imageURL, options, newImage = false) {
@@ -150,14 +150,14 @@ const updateLegacyJson = (json) => {
   }
 
   return transformedImgObj;
-}
+};
 
 extractFileName = (name) => {
   const startIndex = name.lastIndexOf('.');
   const fileName = name.substring(0, startIndex);
 
   return fileName;
-}
+};
 
 const handleDrop = (e) => {
   alert('You\'re editing a map with local images. You\'ll need to save images at archive.org if you\'d like to save your work online, or to export the map.');
