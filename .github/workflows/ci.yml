@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        script: [lint, typecheck, test]
+        script: [lint, typecheck, 'test:coverage']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -32,7 +32,7 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - if: matrix.script == 'test'
+      - if: matrix.script == 'test:coverage'
         run: npx playwright install --with-deps chromium
       - run: npm run ${{ matrix.script }}
 
