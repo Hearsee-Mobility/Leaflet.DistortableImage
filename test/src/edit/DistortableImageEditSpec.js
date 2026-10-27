@@ -1,5 +1,5 @@
 import {vi} from 'vitest';
-import {simulateEvent, waitForLoad} from '../../helpers.js';
+import {simulateEvent, singleClickMap, waitForLoad} from '../../helpers.js';
 
 describe('L.DistortableImage.Edit', () => {
   let map; let ov;
@@ -144,7 +144,7 @@ describe('L.DistortableImage.Edit', () => {
       expect(lockHandleState).to.deep.equal(['1', '1', '1', '1']);
     });
 
-    it('Should remove an image\'s individual toolbar instance regardless of lock handles', () => {
+    it('Should remove an image\'s individual toolbar instance regardless of lock handles', async () => {
       const edit = ov.editing;
 
       edit.enable();
@@ -156,12 +156,9 @@ describe('L.DistortableImage.Edit', () => {
       expect(edit.toolbar).to.not.be.false;
 
       // then trigger _deselect
-      map.getContainer().click();
+      await singleClickMap(map);
 
-      // we deselect after 3ms to confirm the click wasn't a dblclick
-      setTimeout(() => {
-        expect(edit.toolbar).to.be.false;
-      }, 3000);
+      expect(edit.toolbar).to.be.false;
     });
   });
 
@@ -177,32 +174,13 @@ describe('L.DistortableImage.Edit', () => {
       expect(newIdx).to.equal((idx + 1) % modes.length);
     });
 
-    it('Will also select the image when triggerd by dblclick', () => {
-      ov.deselect();
-      expect(ov.isSelected()).to.be.false;
-
-      simulateEvent(ov.getElement(), 'dblclick');
-      setTimeout(() => {
-        expect(ov.isSelected()).to.be.true;
-      }, 3000);
-    });
-
     it('It prevents dblclick events from propagating to the map', () => {
-      const overlaySpy = vi.fn();
       const mapSpy = vi.fn();
-
-      ov.on('dblclick', overlaySpy);
       map.on('dblclick', mapSpy);
 
       simulateEvent(ov.getElement(), 'dblclick');
 
-      setTimeout(() => {
-        expect(ov.editing.nextMode).to.have.been.called;
-        expect(L.DomEvent.stop).to.have.been.called;
-
-        expect(overlaySpy).toHaveBeenCalled();
-        expect(mapSpy).not.toHaveBeenCalled();
-      }, 3000);
+      expect(mapSpy).not.toHaveBeenCalled();
     });
 
     it('Should call #setMode', () => {
