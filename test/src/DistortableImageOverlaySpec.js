@@ -1,7 +1,10 @@
+import {vi} from 'vitest';
+import {waitForLoad} from '../helpers.js';
+
 describe('L.DistortableImageOverlay', function() {
   let map; let ov;
 
-  beforeEach(function(done) {
+  beforeEach(async function() {
     const mapContainer = L.DomUtil.create('div', '', document.body);
     const fullSize = [document.querySelector('html'), document.body, mapContainer];
 
@@ -23,76 +26,64 @@ describe('L.DistortableImageOverlay', function() {
     }).addTo(map);
 
     /* Forces the image to load before any tests are run. */
-    L.DomEvent.on(ov.getElement(), 'load', function() {
-      expect(map.getMaxZoom()).to.equal(Infinity); // before adding any background layers
-      done();
-    });
+    await waitForLoad(ov.getElement());
+    expect(map.getMaxZoom()).to.equal(Infinity); // before adding any background layers
+  });
 
-    afterEach(function() {
-      L.DomUtil.remove(ov);
-    });
+  afterEach(function() {
+    L.DomUtil.remove(ov);
   });
 
   describe('initialization', function() {
     // we need a maxZoom of 24 so that images of very small areas may be distorted against
     // one another even if the background imagery is not good enough to be useful.
-    it('should add Google tile base layer via Google Mutant library, with maxZoom of 24', function(done) {
+    it('should add Google tile base layer via Google Mutant library, with maxZoom of 24', async function() {
       map.addGoogleMutant();
 
-      map.whenReady(function() {
-        expect(map.getMaxZoom()).to.equal(24);
-        done();
-      });
+      await new Promise((resolve) => map.whenReady(resolve));
+      expect(map.getMaxZoom()).to.equal(24);
     });
   });
 
   describe('initialization: actions option', function() {
-    it('The image will be initialized with a default set of actions if not passed', function(done) {
+    it('The image will be initialized with a default set of actions if not passed', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {}).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        expect(ov2.editing.editActions.length).to.eq(11);
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      expect(ov2.editing.editActions.length).to.eq(11);
     });
 
-    it('Will initialize the image with the passed array of actions', function(done) {
+    it('Will initialize the image with the passed array of actions', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         actions: [L.ScaleAction, L.RestoreAction, L.RotateAction],
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        expect(ov2.editing.editActions.length).to.eq(3);
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      expect(ov2.editing.editActions.length).to.eq(3);
     });
 
-    it('Will initialize an image with no actions if passed an empty array', function(done) {
+    it('Will initialize an image with no actions if passed an empty array', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         actions: [],
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        expect(ov2.editing).to.be.ok;
-        expect(ov2.editing.editActions.length).to.eq(0);
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      expect(ov2.editing).to.be.ok;
+      expect(ov2.editing.editActions.length).to.eq(0);
     });
   });
 
   describe('initialization: mode option', function() {
-    it('Will initialize the image with the passed mode, if available', function(done) {
+    it('Will initialize the image with the passed mode, if available', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         mode: 'rotate',
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        expect(ov2.editing.getMode()).to.eq('rotate');
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      expect(ov2.editing.getMode()).to.eq('rotate');
     });
 
-    it('A mode is unavailable if it either does not exist or is restricted via the `actions` option', function(done) {
+    it('A mode is unavailable if it either does not exist or is restricted via the `actions` option', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         mode: 'blah',
       }).addTo(map);
@@ -102,32 +93,26 @@ describe('L.DistortableImageOverlay', function() {
         actions: [L.ScaleAction, L.BorderAction],
       }).addTo(map);
 
-      L.DomEvent.on(ov3.getElement(), 'load', function() {
-        expect(ov2.editing.getMode()).to.not.eq('blah');
-        expect(ov3.editing.getMode()).to.not.eq('rotate');
-        done();
-      });
+      await waitForLoad(ov3.getElement());
+      expect(ov2.editing.getMode()).to.not.eq('blah');
+      expect(ov3.editing.getMode()).to.not.eq('rotate');
     });
 
-    it('If the mode is unavailable, the image\'s mode will be the 1st available one', function(done) {
+    it('If the mode is unavailable, the image\'s mode will be the 1st available one', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         mode: 'blah',
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        expect(ov2.editing.editActions[0]).to.eq(L.DragAction);
-        expect(ov2.editing.getMode()).to.eq('drag');
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      expect(ov2.editing.editActions[0]).to.eq(L.DragAction);
+      expect(ov2.editing.getMode()).to.eq('drag');
     });
 
-    it('If not passed, the image will have the default mode, `distort` if available', function(done) {
+    it('If not passed, the image will have the default mode, `distort` if available', async function() {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {}).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        expect(ov2.editing.getMode()).to.eq('distort');
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      expect(ov2.editing.getMode()).to.eq('distort');
     });
   });
 
@@ -156,10 +141,10 @@ describe('L.DistortableImageOverlay', function() {
     });
 
     it('Is invoked on image click', function() {
-      const ovSpy = sinon.spy();
+      const ovSpy = vi.fn();
       ov.on('select', ovSpy);
       ov.getElement().click();
-      expect(ovSpy.called).to.be.true;
+      expect(ovSpy).toHaveBeenCalled();
     });
 
     it('Locked images can be selected', function() {
@@ -186,7 +171,7 @@ describe('L.DistortableImageOverlay', function() {
         return layerArr.some(this.isCollected.bind(this));
       };
 
-      sinon.stub(ov.eP, 'anyCollected').callsFake(function fakeFn() {
+      vi.spyOn(ov.eP, 'anyCollected').mockImplementation(function fakeFn() {
         return L.DomUtil.hasClass(ov.getElement(), 'collected');
       });
 
@@ -212,11 +197,11 @@ describe('L.DistortableImageOverlay', function() {
     });
 
     it('Is invoked on map click', function() {
-      const ovSpy = sinon.spy();
+      const ovSpy = vi.fn();
       ov.on('deselect', ovSpy);
       map.getContainer().click();
       setTimeout(function() {
-        expect(ovSpy.called).to.be.true;
+        expect(ovSpy).toHaveBeenCalled();
       }, 3000);
     });
 
@@ -292,7 +277,7 @@ describe('L.DistortableImageOverlay', function() {
   describe('#rotateBy', function() {
     let ov2;
 
-    beforeEach(function(done) {
+    beforeEach(async function() {
       ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         corners: [
           L.latLng(41.7934, -87.6052),
@@ -302,9 +287,7 @@ describe('L.DistortableImageOverlay', function() {
         ],
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', function() {
-        done();
-      });
+      await waitForLoad(ov2.getElement());
     });
 
     afterEach(function() {

@@ -32,6 +32,8 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - if: matrix.script == 'test'
+        run: npx playwright install --with-deps chromium
       - run: npm run ${{ matrix.script }}
 
   release:

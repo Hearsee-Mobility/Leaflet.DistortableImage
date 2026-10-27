@@ -1,7 +1,9 @@
+import {simulateEvent, waitForLoad} from '../helpers.js';
+
 describe('L.DistortableCollection', function() {
   let map; let overlay; let overlay2; let overlay3; let imgGroup;
 
-  beforeEach(function(done) {
+  beforeEach(async function() {
     map = L.map(L.DomUtil.create('div', '', document.body)).setView([41.7896, -87.5996], 15);
 
     overlay = L.distortableImageOverlay('/examples/example.jpg', {
@@ -38,7 +40,7 @@ describe('L.DistortableCollection', function() {
     imgGroup.addLayer(overlay3);
 
     /* Forces the images to load before any tests are run. */
-    L.DomEvent.on(overlay3, 'load', function() { done(); });
+    await Promise.all([overlay, overlay2, overlay3].map(waitForLoad));
   });
 
   afterEach(function() {
@@ -57,8 +59,8 @@ describe('L.DistortableCollection', function() {
 
   describe('#isCollected', function() {
     it('Should only return true if the image was selected using shift + mousedown', function() {
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay2.getElement(), 'mousedown');
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay2.getElement(), 'mousedown');
       expect(imgGroup.isCollected(overlay)).to.be.true;
       expect(imgGroup.isCollected(overlay2)).to.be.false;
     });
@@ -66,8 +68,8 @@ describe('L.DistortableCollection', function() {
 
   describe('#anyCollected', function() {
     it('Should return false if no selections were made with shift + mousedown', function() {
-      chai.simulateEvent(overlay.getElement(), 'mousedown');
-      chai.simulateEvent(overlay2.getElement(), 'mousedown');
+      simulateEvent(overlay.getElement(), 'mousedown');
+      simulateEvent(overlay2.getElement(), 'mousedown');
       expect(imgGroup.isCollected(overlay)).to.be.false;
       expect(imgGroup.isCollected(overlay2)).to.be.false;
     });
@@ -78,8 +80,8 @@ describe('L.DistortableCollection', function() {
       const img = overlay.getElement();
       const img2 = overlay2.getElement();
 
-      chai.simulateEvent(img, 'mousedown', {shiftKey: true});
-      chai.simulateEvent(img2, 'mousedown', {shiftKey: true});
+      simulateEvent(img, 'mousedown', {shiftKey: true});
+      simulateEvent(img2, 'mousedown', {shiftKey: true});
 
       expect(L.DomUtil.getClass(img)).to.include('collected');
       expect(L.DomUtil.getClass(img2)).to.include('collected');
@@ -89,7 +91,7 @@ describe('L.DistortableCollection', function() {
       const img = overlay.getElement();
 
       overlay.editing._toggleLockMode();
-      chai.simulateEvent(img, 'mousedown', {shiftKey: true});
+      simulateEvent(img, 'mousedown', {shiftKey: true});
 
       expect(L.DomUtil.getClass(img)).to.include('collected');
     });

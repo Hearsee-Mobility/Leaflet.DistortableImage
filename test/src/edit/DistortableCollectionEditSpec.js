@@ -1,3 +1,6 @@
+import {vi} from 'vitest';
+import {simulateEvent, waitForLoad} from '../../helpers.js';
+
 describe('L.DistortableCollection.Edit', () => {
   let map;
   let overlay;
@@ -5,7 +8,7 @@ describe('L.DistortableCollection.Edit', () => {
   let overlay3;
   let imgGroup;
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     map = L.map(L.DomUtil.create('div', '', document.body)).setView(
       [41.7896, -87.5996],
       15
@@ -45,9 +48,7 @@ describe('L.DistortableCollection.Edit', () => {
     imgGroup.addLayer(overlay3);
 
     /* Forces the images to load before any tests are run. */
-    L.DomEvent.on(overlay3, 'load', () => {
-      done();
-    });
+    await Promise.all([overlay, overlay2, overlay3].map(waitForLoad));
   });
 
   afterEach(() => {
@@ -126,7 +127,7 @@ describe('L.DistortableCollection.Edit', () => {
       expect(map._toolbars).to.be.empty;
 
       // need both bc simulated `mousedown`s don't fire `click` events afterwards like regular user generated `mousedown`s.
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
       overlay.getElement().click();
 
       expect(Object.keys(map._toolbars)).to.have.lengthOf(1);
@@ -151,7 +152,7 @@ describe('L.DistortableCollection.Edit', () => {
   describe('#_removeToolbar', () => {
     beforeEach(() => {
       // multi-select the image and add the toolbar
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
       imgGroup.editing._addToolbar();
 
       expect(Object.keys(map._toolbars)).to.have.lengthOf(1);
@@ -166,7 +167,7 @@ describe('L.DistortableCollection.Edit', () => {
 
     it('is invoked on shift + mousedown when it toggles the image *out* of multi-select', () => {
       // deselecting the image removes the control toolbar
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
       expect(map._toolbars).to.be.empty;
     });
 
@@ -183,8 +184,8 @@ describe('L.DistortableCollection.Edit', () => {
 
   describe('#_lockGroup', () => {
     beforeEach(() => {
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay3.getElement(), 'mousedown', {
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay3.getElement(), 'mousedown', {
         shiftKey: true,
       });
 
@@ -213,11 +214,11 @@ describe('L.DistortableCollection.Edit', () => {
 
   describe('#_unlockGroup', () => {
     beforeEach(() => {
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay2.getElement(), 'mousedown', {
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay2.getElement(), 'mousedown', {
         shiftKey: true,
       });
-      chai.simulateEvent(overlay3.getElement(), 'mousedown', {
+      simulateEvent(overlay3.getElement(), 'mousedown', {
         shiftKey: true,
       });
 
@@ -240,11 +241,11 @@ describe('L.DistortableCollection.Edit', () => {
   describe('#_removeGroup', () => {
     beforeEach(() => {
       // multi-selects the images to add them to the feature group
-      chai.simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
-      chai.simulateEvent(overlay3.getElement(), 'mousedown', {
+      simulateEvent(overlay.getElement(), 'mousedown', {shiftKey: true});
+      simulateEvent(overlay3.getElement(), 'mousedown', {
         shiftKey: true,
       });
-      window.confirm = sinon.spy();
+      window.confirm = vi.fn();
     });
 
     it('removes a collection of layers', () => {

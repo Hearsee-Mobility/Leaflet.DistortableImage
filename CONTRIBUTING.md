@@ -53,7 +53,21 @@ We use SVG for our icon system. Please visit our wiki [SVG Icon System](https://
 
 ### Testing
 
-[Guide](https://github.com/publiclab/Leaflet.DistortableImage/wiki/Testing) on testing LDI.
+Tests run in headless Chromium through [Vitest browser mode](https://vitest.dev/guide/browser/). Install the browser once:
+
+```Bash
+npx playwright install chromium
+```
+
+Then:
+
+```Bash
+npm test               # single run
+npm run test:watch     # re-run on change
+npm run test:coverage  # writes a report to coverage/
+```
+
+Specs live in `test/src/**/*Spec.js`; shared helpers such as `waitForLoad` and `simulateEvent` are in `test/helpers.js`.
 
 ## Bug reports & troubleshooting
 
