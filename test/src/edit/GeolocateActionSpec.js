@@ -1,3 +1,5 @@
+import {vi} from 'vitest';
+
 // A JPEG at 41°49'12"N 71°24'36"W, 150m up, facing 90° true north, with orientation 6
 const geotaggedImageUrl = [
   'data:image/jpeg;base64,/9j/4QDURXhpZgAATU0AKgAAAAgAAgESAAMAAAABAAYAAIglAAQAAAABAAAAJgAAAAAACAABAAIAA',
@@ -68,28 +70,28 @@ describe('L.GeolocateAction', function() {
   let consoleLog;
 
   beforeEach(function() {
-    consoleLog = sinon.stub(console, 'log');
+    consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   afterEach(function() {
-    consoleLog.restore();
+    consoleLog.mockRestore();
   });
 
   it('Logs the geolocation of the overlay image when activated', function() {
     return activateGeolocateFor(geotaggedImageUrl).then(() => {
-      expect(consoleLog.calledWithMatch({altitude: 150})).to.equal(true);
+      expect(consoleLog).toHaveBeenCalledWith(expect.objectContaining({altitude: 150}));
     });
   });
 
   it('Logs a load failure when the image request fails', function() {
     return activateGeolocateFor('/examples/missing.jpg').then(() => {
-      expect(consoleLog.calledWith('Could not load image for geolocation:', 'HTTP 404')).to.equal(true);
+      expect(consoleLog).toHaveBeenCalledWith('Could not load image for geolocation:', 'HTTP 404');
     });
   });
 
   it('Logs a notice instead of throwing when the image has no EXIF data', function() {
     return activateGeolocateFor(untaggedImageUrl).then(() => {
-      expect(consoleLog.calledWith('No EXIF geolocation data found')).to.equal(true);
+      expect(consoleLog).toHaveBeenCalledWith('No EXIF geolocation data found');
     });
   });
 });

@@ -1,7 +1,9 @@
+import {waitForLoad} from '../../helpers.js';
+
 describe('L.EditHandle', function() {
   let map; let overlay; let rotateHandle; let scaleHandle;
 
-  beforeEach(function(done) {
+  beforeEach(async function() {
     map = L.map(L.DomUtil.create('div', '', document.body))
         .setView([51.505, -0.09], 13);
 
@@ -14,11 +16,9 @@ describe('L.EditHandle', function() {
       ],
     }).addTo(map);
 
-    L.DomEvent.on(overlay.getElement(), 'load', function() {
-      rotateHandle = L.rotateHandle(overlay, 0);
-      scaleHandle = L.scaleHandle(overlay, 0);
-      done();
-    });
+    await waitForLoad(overlay.getElement());
+    rotateHandle = L.rotateHandle(overlay, 0);
+    scaleHandle = L.scaleHandle(overlay, 0);
   });
 
   describe('#calculateAngleDelta', function() {

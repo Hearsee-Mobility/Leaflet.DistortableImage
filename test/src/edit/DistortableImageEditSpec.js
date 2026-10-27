@@ -1,7 +1,10 @@
+import {vi} from 'vitest';
+import {simulateEvent, waitForLoad} from '../../helpers.js';
+
 describe('L.DistortableImage.Edit', () => {
   let map; let ov;
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     map = L.map(L.DomUtil.create('div', '', document.body)).setView([41.7896, -87.5996], 15);
 
     ov = L.distortableImageOverlay('/examples/example.jpg', {
@@ -14,11 +17,11 @@ describe('L.DistortableImage.Edit', () => {
     }).addTo(map);
 
     /* Forces the image to load before any tests are run. */
-    L.DomEvent.on(ov.getElement(), 'load', () => { done(); });
+    await waitForLoad(ov.getElement());
+  });
 
-    afterEach(() => {
-      L.DomUtil.remove(ov);
-    });
+  afterEach(() => {
+    L.DomUtil.remove(ov);
   });
 
   it('Should be initialized along with each instance of L.DistortableImageOverlay.', () => {
@@ -86,7 +89,7 @@ describe('L.DistortableImage.Edit', () => {
       expect(edit.hasTool(next)).to.be.true;
     });
 
-    it('Should add the new action to the image\'s `modes` if it is also a mode', (done) => {
+    it('Should add the new action to the image\'s `modes` if it is also a mode', async () => {
       const old = L.ScaleAction;
       const next = L.DragAction;
 
@@ -94,18 +97,15 @@ describe('L.DistortableImage.Edit', () => {
         actions: [old],
       }).addTo(map);
 
-      L.DomEvent.on(ov3.getElement(), 'load', () => {
-        const edit = ov3.editing;
-        expect(edit.hasMode('scale')).to.be.true;
-        expect(edit.hasMode('drag')).to.be.false;
+      await waitForLoad(ov3.getElement());
+      const edit = ov3.editing;
+      expect(edit.hasMode('scale')).to.be.true;
+      expect(edit.hasMode('drag')).to.be.false;
 
-        edit.replaceTool(old, next);
+      edit.replaceTool(old, next);
 
-        expect(edit.hasMode('scale')).to.be.false;
-        expect(edit.hasMode('drag')).to.be.true;
-
-        done();
-      });
+      expect(edit.hasMode('scale')).to.be.false;
+      expect(edit.hasMode('drag')).to.be.true;
     });
   });
 
@@ -181,55 +181,52 @@ describe('L.DistortableImage.Edit', () => {
       ov.deselect();
       expect(ov.isSelected()).to.be.false;
 
-      chai.simulateEvent(ov.getElement(), 'dblclick');
+      simulateEvent(ov.getElement(), 'dblclick');
       setTimeout(() => {
         expect(ov.isSelected()).to.be.true;
       }, 3000);
     });
 
     it('It prevents dblclick events from propagating to the map', () => {
-      const overlaySpy = sinon.spy();
-      const mapSpy = sinon.spy();
+      const overlaySpy = vi.fn();
+      const mapSpy = vi.fn();
 
       ov.on('dblclick', overlaySpy);
       map.on('dblclick', mapSpy);
 
-      chai.simulateEvent(ov.getElement(), 'dblclick');
+      simulateEvent(ov.getElement(), 'dblclick');
 
       setTimeout(() => {
         expect(ov.editing.nextMode).to.have.been.called;
         expect(L.DomEvent.stop).to.have.been.called;
 
-        expect(overlaySpy.called).to.be.true;
-        expect(mapSpy.notCalled).to.be.true;
+        expect(overlaySpy).toHaveBeenCalled();
+        expect(mapSpy).not.toHaveBeenCalled();
       }, 3000);
     });
 
     it('Should call #setMode', () => {
       const edit = ov.editing;
-      const spy = sinon.spy(edit, 'setMode');
-      chai.simulateEvent(ov.getElement(), 'dblclick');
-      expect(spy.called).to.be.ok;
+      const spy = vi.spyOn(edit, 'setMode');
+      simulateEvent(ov.getElement(), 'dblclick');
+      expect(spy).toHaveBeenCalled();
     });
 
-    it('Will still update the mode of an initialized image with suppressToolbar: true', (done) => {
+    it('Will still update the mode of an initialized image with suppressToolbar: true', async () => {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         suppressToolbar: true,
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', () => {
-        const edit = ov2.editing;
-        const modes = Object.keys(edit.getModes());
-        const mode = edit.getMode();
-        const idx = modes.indexOf(mode);
+      await waitForLoad(ov2.getElement());
+      const edit = ov2.editing;
+      const modes = Object.keys(edit.getModes());
+      const mode = edit.getMode();
+      const idx = modes.indexOf(mode);
 
-        expect(edit.toolbar).to.be.undefined;
+      expect(edit.toolbar).to.be.undefined;
 
-        const newIdx = modes.indexOf(edit.nextMode()._mode);
-        expect(newIdx).to.equal((idx + 1) % modes.length);
-
-        done();
-      });
+      const newIdx = modes.indexOf(edit.nextMode()._mode);
+      expect(newIdx).to.equal((idx + 1) % modes.length);
     });
   });
 
@@ -253,20 +250,17 @@ describe('L.DistortableImage.Edit', () => {
       expect(edit.setMode('lock')).to.be.undefined;
     });
 
-    it('Will still update the mode of an initialized image with suppressToolbar: true', (done) => {
+    it('Will still update the mode of an initialized image with suppressToolbar: true', async () => {
       const ov2 = L.distortableImageOverlay('/examples/example.jpg', {
         suppressToolbar: true,
       }).addTo(map);
 
-      L.DomEvent.on(ov2.getElement(), 'load', () => {
-        const edit = ov2.editing;
-        expect(edit.toolbar).to.be.undefined;
-        expect(edit.getMode()).to.not.eql('lock');
-        expect(edit.setMode('lock')).to.be.ok;
-        expect(edit.getMode()).to.eql('lock');
-
-        done();
-      });
+      await waitForLoad(ov2.getElement());
+      const edit = ov2.editing;
+      expect(edit.toolbar).to.be.undefined;
+      expect(edit.getMode()).to.not.eql('lock');
+      expect(edit.setMode('lock')).to.be.ok;
+      expect(edit.getMode()).to.eql('lock');
     });
   });
 });
