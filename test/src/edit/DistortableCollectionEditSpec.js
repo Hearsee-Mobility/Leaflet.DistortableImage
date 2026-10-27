@@ -245,7 +245,7 @@ describe('L.DistortableCollection.Edit', () => {
       simulateEvent(overlay3.getElement(), 'mousedown', {
         shiftKey: true,
       });
-      window.confirm = vi.fn();
+      window.confirm = vi.fn().mockReturnValue(true);
     });
 
     it('removes a collection of layers', () => {
@@ -254,8 +254,7 @@ describe('L.DistortableCollection.Edit', () => {
 
       imgGroup.editing._removeGroup();
 
-      expect(layers).to.not.have.members([overlay, overlay3]);
-      expect(layers).to.include.members([overlay2]);
+      expect(imgGroup.getLayers()).to.have.members([overlay2]);
     });
 
     it('removes the layers from the map on removal from group', () => {
@@ -267,7 +266,7 @@ describe('L.DistortableCollection.Edit', () => {
 
       imgGroup.editing._removeGroup();
 
-      expect(map._layers).to.not.have.all.keys(id, id3);
+      expect(map._layers).to.not.have.any.keys(id, id3);
       expect(map._layers).to.include.all.keys(id2);
     });
   });
