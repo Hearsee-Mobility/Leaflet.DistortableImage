@@ -21,7 +21,7 @@ Learn more about contributing to Public Lab code projects on these pages:
 
 ## Setup
 
-1\. This project uses Webpack to bundle JavaScript. From the root directory, run:
+1\. This project uses Vite to bundle JavaScript. From the root directory, run:
 
 ```Bash
 # installs dependencies and the latest version of leaflet as a peer dependency; builds dist files.
@@ -32,22 +32,20 @@ npm run setup
 
 2\. Server setup. **Choose one option below.**
 
-  - a. You can run it with the webpack development server we have set up:
+  - a. You can run it with the Vite development server we have set up:
 
 ```Bash
 # Opens examples/index.html in your default browser and watch live for changes
 npm run serve:dev
 ```
 
-* b. Or to run it with your own server, just ensure that webpack is watching for updates to the `src` files:
+* b. Or to run it with your own server, just ensure that Vite is watching for updates to the `src` files:
 
 ```Bash
 npm run watch:dev
 ```
 
 3\. Once you finish, commit your changes and a pre-commit hook automatically updates your `dist` files to a production build (via `npm run build`).
-
-*To learn more about our Webpack configuration file, take a look at [this](WEBPACK.md).*
 
 ### Icons
 
