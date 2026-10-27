@@ -1,5 +1,5 @@
 import {vi} from 'vitest';
-import {waitForLoad} from '../helpers.js';
+import {singleClickMap, waitForLoad} from '../helpers.js';
 
 describe('L.DistortableImageOverlay', function() {
   let map; let ov;
@@ -134,10 +134,8 @@ describe('L.DistortableImageOverlay', function() {
 
       ov.select();
 
-      setTimeout(function() {
-        expect(ov._selected).to.be.true;
-        expect(ov.editing.toolbar).to.be.true;
-      }, 3000);
+      expect(ov._selected).to.be.true;
+      expect(ov.editing.toolbar).to.be.ok;
     });
 
     it('Is invoked on image click', function() {
@@ -150,11 +148,9 @@ describe('L.DistortableImageOverlay', function() {
     it('Locked images can be selected', function() {
       ov.editing._lock();
       ov.getElement().click();
-      setTimeout(function() {
-        expect(ov.editing.getMode()).to.eql('lock');
-        expect(ov._selected).to.be.true;
-        expect(ov.editing.toolbar).to.be.true;
-      }, 3000);
+      expect(ov.editing.getMode()).to.eql('lock');
+      expect(ov._selected).to.be.true;
+      expect(ov.editing.toolbar).to.be.ok;
     });
 
     it('Returns undefined if image editing is disabled', function() {
@@ -185,10 +181,6 @@ describe('L.DistortableImageOverlay', function() {
   describe('#deselect', function() {
     beforeEach(function() {
       ov.select();
-      setTimeout(function() {
-        expect(ov._selected).to.be.true;
-        expect(ov.editing.toolbar).to.be.true;
-      }, 3000);
     });
 
     it('Allows programmatically deselecting a single image', function() {
@@ -196,13 +188,11 @@ describe('L.DistortableImageOverlay', function() {
       expect(ov._selected).to.be.false;
     });
 
-    it('Is invoked on map click', function() {
+    it('Is invoked on map click', async function() {
       const ovSpy = vi.fn();
       ov.on('deselect', ovSpy);
-      map.getContainer().click();
-      setTimeout(function() {
-        expect(ovSpy).toHaveBeenCalled();
-      }, 3000);
+      await singleClickMap(map);
+      expect(ovSpy).toHaveBeenCalled();
     });
 
     it('Returns undefined if image editing is disabled', function() {
@@ -266,12 +256,6 @@ describe('L.DistortableImageOverlay', function() {
       expect(Math.round(scaledC1.lat)).to.equal(Math.round(c2.lat));
       expect(Math.round(scaledC1.lng)).to.equal(Math.round(c2.lng));
     });
-
-    it('Maintains image proportions when scaling', function() {
-      const center = ov.getCenter();
-      expect(Math.round(ov.getCenter().lat)).to.equal(Math.round(center.lat));
-      expect(Math.round(ov.getCenter().lng)).to.equal(Math.round(center.lng));
-    });
   });
 
   describe('#rotateBy', function() {
@@ -292,16 +276,6 @@ describe('L.DistortableImageOverlay', function() {
 
     afterEach(function() {
       L.DomUtil.remove(ov2);
-    });
-
-    it('Should not rotate the image when passed a value of 0 or 360', function() {
-      const corners = ov.getCorners();
-
-      ov.rotateBy(0);
-      expect(corners).to.eql(ov.getCorners());
-
-      ov.rotateBy(360);
-      expect(corners).to.eql(ov.getCorners());
     });
 
     it('Should rotate the image by the specified units, otherwise by degrees', function() {

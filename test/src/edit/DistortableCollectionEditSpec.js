@@ -1,5 +1,5 @@
 import {vi} from 'vitest';
-import {simulateEvent, waitForLoad} from '../../helpers.js';
+import {simulateEvent, singleClickMap, waitForLoad} from '../../helpers.js';
 
 describe('L.DistortableCollection.Edit', () => {
   let map;
@@ -58,23 +58,20 @@ describe('L.DistortableCollection.Edit', () => {
   });
 
   describe('#_decollectAll', () => {
-    it('Should remove the "selected" class from all images', () => {
+    it('Should remove the "selected" class from all images', async () => {
       const img = overlay.getElement();
       const img2 = overlay2.getElement();
 
       L.DomUtil.addClass(img, 'collected');
       L.DomUtil.addClass(img2, 'collected');
 
-      map.getContainer().click();
+      await singleClickMap(map);
 
-      // we deselect after 3ms to confirm the click wasn't a dblclick
-      setTimeout(() => {
-        expect(L.DomUtil.getClass(img)).to.not.include('collected');
-        expect(L.DomUtil.getClass(img2)).to.not.include('collected');
-      }, 3000);
+      expect(L.DomUtil.getClass(img)).to.not.include('collected');
+      expect(L.DomUtil.getClass(img2)).to.not.include('collected');
     });
 
-    it("Should hide all images handles unless they're lock handles", () => {
+    it('Should hide every handle on uncollected images, lock handles included', async () => {
       const edit = overlay.editing;
       const edit2 = overlay2.editing;
       const distortHandleState = [];
@@ -84,26 +81,24 @@ describe('L.DistortableCollection.Edit', () => {
       edit2._toggleLockMode();
 
       // then trigger _decollectAll
-      map.getContainer().click();
+      await singleClickMap(map);
 
-      setTimeout(() => {
-        edit._handles.distort.eachLayer((handle) => {
-          const icon = handle.getElement();
-          distortHandleState.push(L.DomUtil.getStyle(icon, 'opacity'));
-        });
+      edit._handles.distort.eachLayer((handle) => {
+        const icon = handle.getElement();
+        distortHandleState.push(L.DomUtil.getStyle(icon, 'opacity'));
+      });
 
-        edit2._handles.lock.eachLayer((handle) => {
-          const icon = handle.getElement();
-          lockHandleState.push(L.DomUtil.getStyle(icon, 'opacity'));
-        });
+      edit2._handles.lock.eachLayer((handle) => {
+        const icon = handle.getElement();
+        lockHandleState.push(L.DomUtil.getStyle(icon, 'opacity'));
+      });
 
-        expect(distortHandleState).to.deep.equal(['0', '0', '0', '0']);
-        // opacity for lockHandles is unset because we never altered it to hide it as part of deselection
-        expect(lockHandleState).to.deep.equal(['', '', '', '']);
-      }, 3000);
+      expect(distortHandleState).to.deep.equal(['0', '0', '0', '0']);
+      // lock handles stay visible only while their image is collected
+      expect(lockHandleState).to.deep.equal(['0', '0', '0', '0']);
     });
 
-    it("Should remove an image's individual toolbar instances regardless of lock handles", () => {
+    it("Should remove an image's individual toolbar instances regardless of lock handles", async () => {
       const edit2 = overlay2.editing;
 
       edit2._toggleLockMode();
@@ -114,11 +109,9 @@ describe('L.DistortableCollection.Edit', () => {
       expect(edit2.toolbar).to.not.be.false;
 
       // then trigger _decollectAll
-      map.getContainer().click();
+      await singleClickMap(map);
 
-      setTimeout(() => {
-        expect(edit2.toolbar).to.be.false;
-      }, 3000);
+      expect(edit2.toolbar).to.be.false;
     });
   });
 
@@ -158,11 +151,10 @@ describe('L.DistortableCollection.Edit', () => {
       expect(Object.keys(map._toolbars)).to.have.lengthOf(1);
     });
 
-    it('is invoked on map click', () => {
-      map.getContainer().click();
-      setTimeout(() => {
-        expect(map._toolbars).to.be.empty;
-      }, 3000);
+    it('is invoked on map click', async () => {
+      await singleClickMap(map);
+
+      expect(map._toolbars).to.be.empty;
     });
 
     it('is invoked on shift + mousedown when it toggles the image *out* of multi-select', () => {

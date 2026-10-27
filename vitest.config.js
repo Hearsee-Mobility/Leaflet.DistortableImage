@@ -19,6 +19,13 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/**/*.{js,ts}'],
       reporter: ['text', 'lcovonly', 'html'],
+      // Floor at the current numbers; raise as tests are added, never lower
+      thresholds: {
+        statements: 64,
+        branches: 52,
+        functions: 65,
+        lines: 64,
+      },
     },
   },
 });
