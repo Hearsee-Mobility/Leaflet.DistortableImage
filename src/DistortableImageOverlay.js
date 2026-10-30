@@ -1,3 +1,5 @@
+import {ImageCorners} from './corners/ImageCorners.ts';
+
 L.DistortableImageOverlay = L.ImageOverlay.extend({
   options: {
     height: 200,
@@ -20,7 +22,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     this._selected = this.options.selected;
     this._url = url;
     this.rotation = {};
-    this._corners = this.options.corners || [];
+    this._imageCorners = new ImageCorners(this.options.corners || [], this._mapProjection());
 
     this.interactive = this.options.interactive;
     this.tooltipText = this.options.tooltipText;
@@ -34,11 +36,8 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 
     map.on('viewreset', this._reset, this);
 
-    if (this.options.corners) {
-      this._corners = this.options.corners;
-      if (map.options.zoomAnimation && L.Browser.any3d) {
-        map.on('zoomanim', this._animateZoom, this);
-      }
+    if (this.options.corners && map.options.zoomAnimation && L.Browser.any3d) {
+      map.on('zoomanim', this._animateZoom, this);
     }
 
     // Have to wait for the image to load because need to access its w/h
@@ -52,13 +51,6 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
       } else {
         this.rotation = {deg: 0, rad: 0};
         this._reset();
-      }
-
-      /* Initialize default corners if not already set */
-      if (!this._corners) {
-        if (map.options.zoomAnimation && L.Browser.any3d) {
-          map.on('zoomanim', this._animateZoom, this);
-        }
       }
 
       /** if there is a featureGroup, only its editable option matters */
@@ -133,23 +125,36 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
     const imageWidth = parseInt(aspectRatio * imageHeight);
     const center = map.project(map.getCenter());
     const offset = L.point(imageWidth, imageHeight).divideBy(2);
-    if (this.options.corners) {
-      this._corners = this.options.corners;
-    } else {
-      this._corners = [
+    if (!this.options.corners) {
+      this._imageCorners.place([
         map.unproject(center.subtract(offset)),
         map.unproject(center.add(L.point(offset.x, -offset.y))),
         map.unproject(center.add(L.point(-offset.x, offset.y))),
         map.unproject(center.add(offset)),
-      ];
+      ]);
     }
 
-    this._initialDimensions = {
-      center: center,
-      offset: offset,
-      zoom: map.getZoom(),
-    };
     this.setBounds(L.latLngBounds(this.getCorners()));
+  },
+
+  /* Reads the map lazily, since the overlay is created before it is added to one. */
+  _mapProjection() {
+    const overlay = this;
+    return {
+      project: (latlng) => overlay._map.project(latlng),
+      unproject: (point) => overlay._map.unproject(L.point(point.x, point.y)),
+      get worldBounds() {
+        const pixelBounds = overlay._map.getPixelWorldBounds();
+        return pixelBounds ? {top: pixelBounds.min.y, bottom: pixelBounds.max.y} : null;
+      },
+    };
+  },
+
+  /* Fires update even when the corners were refused, which keeps the handles from flickering. */
+  _commitCorners() {
+    this.setBounds(L.latLngBounds(this.getCorners()));
+    this.fire('update');
+    return this;
   },
 
   _singleClick(e) {
@@ -227,37 +232,8 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   },
 
   setCorner(corner, latlng) {
-    const edit = this.editing;
-
-    this._corners[corner] = latlng;
-
-    this.setBounds(L.latLngBounds(this.getCorners()));
-    this.fire('update');
-
-    if (edit.toolbar && edit.toolbar instanceof L.DistortableImage.PopupBar) {
-      edit._updateToolbarPos();
-    }
-
-    this.edited = true;
-
-    return this;
-  },
-
-  _cornerExceedsMapLats(zoom, corner, map) {
-    if (map.options.crs.Simple == L.CRS.Simple) {
-      return false;
-    } else {
-      let exceedsTop;
-      let exceedsBottom;
-      if (zoom === 0) {
-        exceedsTop = map.project(corner).y < 2;
-        exceedsBottom = map.project(corner).y >= 255;
-      } else {
-        exceedsTop = map.project(corner).y / zoom < 2;
-        exceedsBottom = map.project(corner).y / Math.pow(2, zoom) >= 255;
-      }
-      return exceedsTop || exceedsBottom;
-    }
+    this._imageCorners.setCorner(corner, latlng);
+    return this._commitCorners();
   },
 
   activateTooltip() {
@@ -285,115 +261,28 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   },
 
   setCorners(latlngObj) {
-    const map = this._map;
-    const zoom = map.getZoom();
-    const edit = this.editing;
-    let i = 0;
-
-    // this is to fix https://github.com/publiclab/Leaflet.DistortableImage/issues/402
-    for (const k in latlngObj) {
-      if (this._cornerExceedsMapLats(zoom, latlngObj[k], map)) {
-        // calling reset / update w/ the same corners bc it prevents a marker flicker for rotate
-        this.setBounds(L.latLngBounds(this.getCorners()));
-        this.fire('update');
-        return;
-      }
-    }
-
-    for (const k in latlngObj) {
-      this._corners[i] = latlngObj[k];
-      i += 1;
-    }
-
-    this.setBounds(L.latLngBounds(this.getCorners()));
-    this.fire('update');
-
-    if (edit.toolbar && edit.toolbar instanceof L.DistortableImage.PopupBar) {
-      edit._updateToolbarPos();
-    }
-
-    this.edited = true;
-
-    return this;
+    this._imageCorners.setCorners(Object.values(latlngObj));
+    return this._commitCorners();
   },
 
   setCornersFromPoints(pointsObj) {
     const map = this._map;
-    const zoom = map.getZoom();
-    const edit = this.editing;
-    let i = 0;
-
-    for (const k in pointsObj) {
-      const corner = map.layerPointToLatLng(pointsObj[k]);
-
-      if (this._cornerExceedsMapLats(zoom, corner, map)) {
-        // calling reset / update w/ the same corners bc it prevents a marker flicker for rotate
-        this.setBounds(L.latLngBounds(this.getCorners()));
-        this.fire('update');
-        return;
-      }
-    }
-
-    for (const k in pointsObj) {
-      this._corners[i] = map.layerPointToLatLng(pointsObj[k]);
-      i += 1;
-    }
-
-    this.setBounds(L.latLngBounds(this.getCorners()));
-    this.fire('update');
-
-    if (edit.toolbar && edit.toolbar instanceof L.DistortableImage.PopupBar) {
-      edit._updateToolbarPos();
-    }
-
-    this.edited = true;
-
-    return this;
+    return this.setCorners(Object.values(pointsObj).map((point) => map.layerPointToLatLng(point)));
   },
 
   scaleBy(scale) {
-    const map = this._map;
-    const center = map.project(this.getCenter());
-    let i;
-    let p;
-    const scaledCorners = {};
+    this._imageCorners.scaleBy(scale);
+    return this._commitCorners();
+  },
 
-    if (scale === 0) {
-      return;
-    }
-
-    for (i = 0; i < 4; i++) {
-      p = map.project(this.getCorner(i)).subtract(center).multiplyBy(scale).add(center);
-      scaledCorners[i] = map.unproject(p);
-    }
-
-    this.setCorners(scaledCorners);
-
-    return this;
+  /* Scales from a handle, refusing to shrink an image whose top edge is already at the minimum width. */
+  _scaleByHandle(scale) {
+    this._imageCorners.scaleBy(scale, this.edgeMinWidth || 50);
+    return this._commitCorners();
   },
 
   getAngle(unit = 'deg') {
-    const matrix = this.getElement()
-      .style[L.DomUtil.TRANSFORM].split('matrix3d')[1]
-      .slice(1, -1)
-      .split(',');
-
-    const row0x = matrix[0];
-    const row0y = matrix[1];
-    const row1x = matrix[4];
-    const row1y = matrix[5];
-
-    const determinant = row0x * row1y - row0y * row1x;
-
-    let angle = L.TrigUtil.calcAngle(row0x, row0y, 'rad');
-
-    if (determinant < 0) {
-      angle += angle < 0 ? Math.PI : -Math.PI;
-    }
-
-    if (angle < 0) {
-      angle = 2 * Math.PI + angle;
-    }
+    const angle = this._imageCorners.angle();
 
     return unit === 'deg'
       ? Math.round(L.TrigUtil.radiansToDegrees(angle))
@@ -409,65 +298,26 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   },
 
   rotateBy(angle, unit = 'deg') {
-    const map = this._map;
-    const center = map.project(this.getCenter());
-    const corners = {};
-    let i;
-    let p;
-    let q;
-
-    if (unit === 'deg') {
-      angle = L.TrigUtil.degreesToRadians(angle);
-    }
-
-    for (i = 0; i < 4; i++) {
-      p = map.project(this.getCorner(i)).subtract(center);
-      q = L.point(
-        Math.cos(angle) * p.x - Math.sin(angle) * p.y,
-        Math.sin(angle) * p.x + Math.cos(angle) * p.y,
-      );
-      corners[i] = map.unproject(q.add(center));
-    }
-
-    this.setCorners(corners);
-
-    return this;
+    this._imageCorners.rotateBy(unit === 'deg' ? L.TrigUtil.degreesToRadians(angle) : angle);
+    return this._commitCorners();
   },
 
   dragBy(formerPoint, newPoint) {
     const map = this._map;
-    let i;
-    let p;
-    const transCorners = {};
-    const delta = map.project(formerPoint).subtract(map.project(newPoint));
+    this._moveByPixels(map.project(newPoint).subtract(map.project(formerPoint)));
+    return this;
+  },
 
-    for (i = 0; i < 4; i++) {
-      p = map.project(this.getCorner(i)).subtract(delta);
-      transCorners[i] = map.unproject(p);
-    }
-
-    this.setCorners(transCorners);
+  /* Returns whether the move was accepted, so a collection can retry a step refused at the world's edge. */
+  _moveByPixels(offset) {
+    const moved = this._imageCorners.moveBy(offset);
+    this._commitCorners();
+    return moved;
   },
 
   restore() {
-    const map = this._map;
-    const center = this._initialDimensions.center;
-    const offset = this._initialDimensions.offset;
-    const zoom = this._initialDimensions.zoom;
-    const corners = [
-      center.subtract(offset),
-      center.add(L.point(offset.x, -offset.y)),
-      center.add(L.point(-offset.x, offset.y)),
-      center.add(offset),
-    ];
-
-    for (let i = 0; i < 4; i++) {
-      if (!map.unproject(corners[i], zoom).equals(this.getCorner(i))) {
-        this.setCorner(i, map.unproject(corners[i], zoom));
-      }
-    }
-
-    this.edited = false;
+    this._imageCorners.restore();
+    this._commitCorners();
     this.fire('restore');
 
     return this;
@@ -536,23 +386,15 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
   },
 
   getCorners() {
-    return this._corners;
+    return this._imageCorners.current;
   },
 
   getCorner(i) {
-    return this._corners[i];
+    return this._imageCorners.current[i];
   },
 
-  // image (vertex) centroid calculation
   getCenter() {
-    const map = this._map;
-    const reduce = this.getCorners().reduce(
-      function (agg, corner) {
-        return agg.add(map.project(corner));
-      },
-      L.point(0, 0),
-    );
-    return map.unproject(reduce.divideBy(4));
+    return this._imageCorners.center();
   },
 
   _calculateProjectiveTransform(latLngToCartesian) {
@@ -598,6 +440,12 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
       c[3].x,
       c[3].y,
     );
+  },
+});
+
+Object.defineProperty(L.DistortableImageOverlay.prototype, 'edited', {
+  get() {
+    return this._imageCorners.isEdited();
   },
 });
 

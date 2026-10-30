@@ -50,6 +50,7 @@ L.DistortableImage.Edit = L.Handler.extend({
     );
 
     L.DomEvent.on(window, 'keydown', this._onKeyDown, this);
+    overlay.on('update', this._updateToolbarPos, this);
   },
 
   /* Run on image deselection. */
@@ -89,6 +90,7 @@ L.DistortableImage.Edit = L.Handler.extend({
     );
 
     L.DomEvent.off(window, 'keydown', this._onKeyDown, this);
+    overlay.off('update', this._updateToolbarPos, this);
   },
 
   disable() {
@@ -315,19 +317,10 @@ L.DistortableImage.Edit = L.Handler.extend({
      */
     this.dragging._updatePosition = function () {
       const topLeft = overlay.getCorner(0);
-      const delta = this._newPos.subtract(map.latLngToLayerPoint(topLeft));
-      let currentPoint;
-      const corners = {};
-      let i;
 
       this.fire('predrag');
 
-      for (i = 0; i < 4; i++) {
-        currentPoint = map.latLngToLayerPoint(overlay.getCorner(i));
-        corners[i] = map.layerPointToLatLng(currentPoint.add(delta));
-      }
-
-      overlay.setCorners(corners);
+      overlay._moveByPixels(this._newPos.subtract(map.latLngToLayerPoint(topLeft)));
       overlay.fire('drag');
 
       this.fire('drag');

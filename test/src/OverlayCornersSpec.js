@@ -54,11 +54,7 @@ describe('Overlay corners', function() {
       expect(largestGap(cornerPixels(overlay), expected)).to.be.below(halfPixel);
     });
 
-    it('Keeps the corners in place when dragged on a map with a simple coordinate system', async function() {
-      expect(await dragOnSimpleMap()).to.be.below(halfPixel);
-    });
-
-    it.fails('Moves the image when dragged on a map with a simple coordinate system', async function() {
+    it('Moves the image when dragged on a map with a simple coordinate system', async function() {
       expect(await dragOnSimpleMap()).to.be.above(halfPixel);
     });
   });
@@ -167,7 +163,7 @@ describe('Overlay corners', function() {
       expect(largestGap(cornerPixels(overlay), before)).to.equal(0);
     });
 
-    it.fails('Ignores a single corner moved past the top of the map', function() {
+    it('Ignores a single corner moved past the top of the map', function() {
       const before = cornerPixels(overlay);
 
       overlay.setCorner(0, L.latLng(89, overlay.getCorner(0).lng));
@@ -188,7 +184,7 @@ describe('Overlay corners', function() {
       expect(largestGap(cornerPixels(unplacedOverlay), before)).to.be.below(halfPixel);
     });
 
-    it.fails('Returns every corner to the corners it was given when restored after edits', function() {
+    it('Returns every corner to the corners it was given when restored after edits', function() {
       const before = cornerPixels(overlay);
       overlay.scaleBy(2);
 
