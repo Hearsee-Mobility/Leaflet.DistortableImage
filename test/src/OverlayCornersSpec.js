@@ -193,6 +193,20 @@ describe('Overlay corners', function() {
       expect(largestGap(cornerPixels(overlay), before)).to.be.below(halfPixel);
     });
 
+    it('Reads as unedited before it is added to a map', function() {
+      const unaddedOverlay = L.distortableImageOverlay('/examples/example.jpg', {corners: rectangleCorners()});
+
+      expect(unaddedOverlay.edited).to.be.false;
+    });
+
+    it('Still reports an edit after it is removed from the map', function() {
+      overlay.scaleBy(2);
+
+      overlay.remove();
+
+      expect(overlay.edited).to.be.true;
+    });
+
     it('Clears the edited flag when restored', function() {
       overlay.scaleBy(2);
 

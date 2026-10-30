@@ -18,7 +18,8 @@ export interface CornerProjection<Position> {
 // Fractions of the world's height a corner may not reach, matching the plugin's original zoom-0 limits.
 const topMargin = 2 / 256;
 const bottomMargin = 255 / 256;
-const sameSpotTolerance = 1e-9;
+// Above the noise a project/unproject round trip leaves at high zoom, far below a visible pixel.
+const sameSpotTolerance = 1e-6;
 
 /**
  * Owns where an image overlay's corners are and every way they may change.
@@ -27,6 +28,7 @@ const sameSpotTolerance = 1e-9;
 export class ImageCorners<Position> {
   private readonly originalCorners: Position[];
   private readonly currentCorners: Position[];
+  private edited = false;
 
   constructor(
     corners: Position[],
@@ -44,14 +46,12 @@ export class ImageCorners<Position> {
   place(corners: Position[]): void {
     this.originalCorners.splice(0, this.originalCorners.length, ...corners);
     this.currentCorners.splice(0, this.currentCorners.length, ...corners);
+    this.edited = false;
   }
 
+  /** Settled when the corners change, so it can be read without a projection. */
   isEdited(): boolean {
-    return this.currentCorners.some(
-      (corner, index) =>
-        distanceBetween(this.toPixels(corner), this.toPixels(this.originalCorners[index])) >
-        sameSpotTolerance,
-    );
+    return this.edited;
   }
 
   setCorners(corners: Position[]): boolean {
@@ -104,6 +104,7 @@ export class ImageCorners<Position> {
 
   restore(): void {
     this.currentCorners.splice(0, this.currentCorners.length, ...this.originalCorners);
+    this.edited = false;
   }
 
   center(): Position {
@@ -134,7 +135,16 @@ export class ImageCorners<Position> {
     }
 
     this.currentCorners.splice(0, this.currentCorners.length, ...corners);
+    this.edited = this.differsFromOriginal();
     return true;
+  }
+
+  private differsFromOriginal(): boolean {
+    return this.currentCorners.some(
+      (corner, index) =>
+        distanceBetween(this.toPixels(corner), this.toPixels(this.originalCorners[index])) >
+        sameSpotTolerance,
+    );
   }
 
   private isPastWorldEdge(position: Position): boolean {
