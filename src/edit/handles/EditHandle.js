@@ -41,7 +41,6 @@ L.EditHandle = L.Marker.extend({
   },
 
   _fireEdit() {
-    this._handled.edited = true;
     this._handled.fire('edit');
   },
 

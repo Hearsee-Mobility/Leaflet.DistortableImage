@@ -21,10 +21,10 @@ export default defineConfig({
       reporter: ['text', 'lcovonly', 'html'],
       // Floor at the current numbers; raise as tests are added, never lower
       thresholds: {
-        statements: 64,
-        branches: 52,
-        functions: 65,
-        lines: 64,
+        statements: 67,
+        branches: 53,
+        functions: 68,
+        lines: 67,
       },
     },
   },

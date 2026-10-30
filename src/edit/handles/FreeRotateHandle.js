@@ -11,7 +11,6 @@ L.FreeRotateHandle = L.EditHandle.extend({
 
   _onHandleDrag() {
     const overlay = this._handled;
-    const map = overlay._map;
     const formerLatLng = overlay.getCorner(this._corner);
     const newLatLng = this.getLatLng();
     const angle = this.calculateAngleDelta(formerLatLng, newLatLng);
@@ -21,21 +20,7 @@ L.FreeRotateHandle = L.EditHandle.extend({
       overlay.rotateBy(angle, 'rad');
     }
 
-    let edgeMinWidth = overlay.edgeMinWidth;
-    if (!edgeMinWidth) {
-      edgeMinWidth = 50;
-    } /* just in case */
-
-    const corner1 = map.latLngToContainerPoint(overlay.getCorner(0));
-    const corner2 = map.latLngToContainerPoint(overlay.getCorner(1));
-    const w = Math.abs(corner1.x - corner2.x);
-    const h = Math.abs(corner1.y - corner2.y);
-    const distance = Math.sqrt(w * w + h * h);
-    if (distance > edgeMinWidth || scale > 1) {
-      overlay.scaleBy(scale);
-    } else {
-      overlay.scaleBy(1);
-    }
+    overlay._scaleByHandle(scale);
   },
 
   updateHandle() {

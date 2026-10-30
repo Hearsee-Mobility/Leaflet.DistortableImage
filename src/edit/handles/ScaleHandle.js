@@ -11,35 +11,10 @@ L.ScaleHandle = L.EditHandle.extend({
 
   _onHandleDrag() {
     const overlay = this._handled;
-    const map = overlay._map;
-    let edgeMinWidth = overlay.edgeMinWidth;
     const formerLatLng = overlay.getCorner(this._corner);
-    const newLatLng = this.getLatLng();
-    const scale = this._calculateScalingFactor(formerLatLng, newLatLng);
+    const scale = this._calculateScalingFactor(formerLatLng, this.getLatLng());
 
-    /*
-     * checks whether the "edgeMinWidth" property is set and tracks the minimum edge length;
-     * this enables preventing scaling to zero, but we might also add an overall scale limit
-     */
-
-    if (!edgeMinWidth) {
-      edgeMinWidth = 50;
-    } /* just in case */
-    const corner1 = map.latLngToLayerPoint(overlay.getCorner(0));
-    const corner2 = map.latLngToLayerPoint(overlay.getCorner(1));
-    const w = Math.abs(corner1.x - corner2.x);
-    const h = Math.abs(corner1.y - corner2.y);
-    const distance = Math.sqrt(w * w + h * h);
-
-    if (distance > edgeMinWidth || scale > 1) {
-      overlay.scaleBy(scale);
-      /*
-       * running scale logic even for a scale ratio of 1
-       * prevents a small, occasional marker flicker
-       */
-    } else {
-      overlay.scaleBy(1);
-    }
+    overlay._scaleByHandle(scale);
   },
 
   updateHandle() {

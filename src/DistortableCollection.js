@@ -162,35 +162,27 @@ L.DistortableCollection = L.FeatureGroup.extend({
 
   _dragStartMultiple(e) {
     const overlay = e.target;
-    const map = this._map;
-    let i;
 
     if (!this.isCollected(overlay)) {
       return;
     }
 
+    this._dragStartTopLeft = this._map.latLngToLayerPoint(overlay.getCorner(0));
     this.eachLayer((layer) => {
-      layer._dragStartPoints = {};
+      layer._groupDragOffset = L.point(0, 0);
       layer.deselect();
-      for (i = 0; i < 4; i++) {
-        const c = layer.getCorner(i);
-        layer._dragStartPoints[i] = map.latLngToLayerPoint(c);
-      }
     });
   },
 
   _dragMultiple(e) {
     const overlay = e.target;
-    const map = this._map;
 
     if (!this.isCollected(overlay)) {
       return;
     }
 
-    const topLeft = map.latLngToLayerPoint(overlay.getCorner(0));
-    const delta = overlay._dragStartPoints[0].subtract(topLeft);
-
-    this._updateCollectionFromPoints(delta, overlay);
+    const topLeft = this._map.latLngToLayerPoint(overlay.getCorner(0));
+    this._moveCollectedBy(topLeft.subtract(this._dragStartTopLeft), overlay);
   },
 
   _toRemove() {
@@ -211,17 +203,12 @@ L.DistortableCollection = L.FeatureGroup.extend({
     });
   },
 
-  _updateCollectionFromPoints(delta, overlay) {
-    const layersToMove = this._toMove(overlay);
-    const p = new L.Transformation(1, -delta.x, 1, -delta.y);
-    let i;
-
-    layersToMove.forEach((layer) => {
-      const movedPoints = {};
-      for (i = 0; i < 4; i++) {
-        movedPoints[i] = p.transform(layer._dragStartPoints[i]);
+  /* Each layer tracks how far it has followed, so a step it refused at the world's edge isn't lost. */
+  _moveCollectedBy(offsetSinceDragStart, overlay) {
+    this._toMove(overlay).forEach((layer) => {
+      if (layer._moveByPixels(offsetSinceDragStart.subtract(layer._groupDragOffset))) {
+        layer._groupDragOffset = offsetSinceDragStart;
       }
-      layer.setCornersFromPoints(movedPoints);
     });
   },
 
