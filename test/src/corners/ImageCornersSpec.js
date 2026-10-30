@@ -159,7 +159,13 @@ describe('Image corners', function() {
 
       imageCorners.rotateBy(Math.PI / 6);
 
-      expect(imageCorners.angle()).to.be.closeTo(Math.PI / 6, 1e-9);
+      expect(imageCorners.angle()).to.be.closeTo(Math.PI / 6, 0.02);
+    });
+
+    it('Measures the angle between whole pixels', function() {
+      const nearlyUpright = createCorners([at(1000, 1000), at(1100, 1000.4), at(1000, 1050), at(1100, 1050)]);
+
+      expect(nearlyUpright.angle()).to.equal(0);
     });
 
     it('Reads a counterclockwise turn as the remainder of a full turn', function() {
@@ -167,7 +173,7 @@ describe('Image corners', function() {
 
       imageCorners.rotateBy(-Math.PI / 6);
 
-      expect(imageCorners.angle()).to.be.closeTo((11 * Math.PI) / 6, 1e-9);
+      expect(imageCorners.angle()).to.be.closeTo((11 * Math.PI) / 6, 0.02);
     });
 
     it('Reads a horizontally mirrored image as unrotated', function() {

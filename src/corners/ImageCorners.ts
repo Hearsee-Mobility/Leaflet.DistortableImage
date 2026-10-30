@@ -111,9 +111,12 @@ export class ImageCorners<Position> {
     return this.projection.unproject(this.centerPixel());
   }
 
-  /** Radians in [0, 2π) along the top edge, flipped by half a turn when the image is mirrored. */
+  /**
+   * Radians in [0, 2π) along the top edge, flipped by half a turn when the image is mirrored.
+   * Measured on whole pixels, as the CSS transform it once came from was, so reported angles stay put.
+   */
   angle(): number {
-    const [topLeft, topRight, bottomLeft] = this.cornerPixels();
+    const [topLeft, topRight, bottomLeft] = this.cornerPixels().map(roundToWholePixel);
     const topEdge = subtract(topRight, topLeft);
     const leftEdge = subtract(bottomLeft, topLeft);
     let radians = Math.atan2(topEdge.y, topEdge.x);
@@ -185,6 +188,10 @@ function subtract(first: PixelPoint, second: PixelPoint): PixelPoint {
 
 function scale(point: PixelPoint, factor: number): PixelPoint {
   return {x: point.x * factor, y: point.y * factor};
+}
+
+function roundToWholePixel(point: PixelPoint): PixelPoint {
+  return {x: Math.round(point.x), y: Math.round(point.y)};
 }
 
 function cross(first: PixelPoint, second: PixelPoint): number {
