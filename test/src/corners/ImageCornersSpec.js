@@ -236,6 +236,25 @@ describe('Image corners', function() {
       expect(imageCorners.isEdited()).to.be.false;
     });
 
+    it('Reads as unedited after a change that leaves the corners where they were', function() {
+      const imageCorners = createCorners();
+
+      imageCorners.scaleBy(0.5, 100);
+
+      expect(imageCorners.isEdited()).to.be.false;
+    });
+
+    it('Reports an edit without consulting the projection once the change is made', function() {
+      const projection = flatProjection();
+      const imageCorners = new ImageCorners(rectangle(), projection);
+      imageCorners.moveBy({x: 1, y: 0});
+      projection.project = () => {
+        throw new Error('No map');
+      };
+
+      expect(imageCorners.isEdited()).to.be.true;
+    });
+
     it('Reads as unedited after a refused change', function() {
       const imageCorners = createCorners();
 
