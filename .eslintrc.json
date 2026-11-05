@@ -5,10 +5,15 @@
     "es6": true,
     "node": true
   },
-  "extends": "google",
+  "extends": [
+    "eslint:recommended",
+    "google"
+  ],
   "globals": {
     "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
+    "SharedArrayBuffer": "readonly",
+    "L": "readonly",
+    "ExifReader": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 8,
@@ -55,12 +60,94 @@
     "space-before-blocks": "off",
     "curly": "off",
     "no-else-return": "off",
-    "no-nested-ternary": "off",
+    "no-nested-ternary": "error",
     "no-mixed-operators": "off",
     "no-useless-return": "off",
     "no-shadow": "off",
     "arrow-parens": "off",
     "no-unmodified-loop-condition": "off",
-    "no-sequences": "off"
-  }
+    "no-sequences": "off",
+    "no-undef": "off",
+    "no-extra-semi": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/**/*.ts"
+      ],
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "files": [
+        "src/**/*.ts"
+      ],
+      "excludedFiles": [
+        "src/index.ts"
+      ],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "L",
+            "message": "Internal modules stay Leaflet-free (docs/adr/0001); take what you need as arguments from the L adapter."
+          }
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "leaflet",
+                "message": "Internal modules stay Leaflet-free (docs/adr/0001); only src/index.ts and the L adapters touch Leaflet."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/**/*.js",
+        "src/**/*.ts"
+      ],
+      "rules": {
+        "complexity": [
+          "error",
+          10
+        ],
+        "max-depth": [
+          "error",
+          4
+        ]
+      }
+    },
+    {
+      "files": [
+        "test/**/*.js"
+      ],
+      "globals": {
+        "describe": "readonly",
+        "it": "readonly",
+        "test": "readonly",
+        "expect": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "vi": "readonly",
+        "chai": "readonly",
+        "assert": "readonly",
+        "suite": "readonly"
+      }
+    },
+    {
+      "files": [
+        "examples/js/**/*.js"
+      ],
+      "globals": {
+        "bootstrap": "readonly",
+        "axios": "readonly"
+      }
+    }
+  ]
 }
