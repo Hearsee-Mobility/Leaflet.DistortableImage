@@ -2,7 +2,7 @@
 // When a rule reaches 0 hits, move it into .eslintrc.json.
 const testTitle = 'CallExpression[callee.name=/^(it|test)$/] > Literal.arguments:first-child';
 const testBody = 'CallExpression[callee.name=/^(it|test)$/] > :function > BlockStatement';
-const expectStatement = ':has(CallExpression[callee.name="expect"])';
+const containsExpect = ':has(CallExpression[callee.name="expect"])';
 
 module.exports = {
   reportUnusedDisableDirectives: true,
@@ -22,13 +22,13 @@ module.exports = {
       files: ['test/**/*.js'],
       rules: {
         'no-restricted-syntax': ['error',
-          {selector: `${testTitle}[value=/^[^A-Z]/]`, message: 'Start the test title with an uppercase letter, as a sentence.'},
-          {selector: `${testTitle}[value=/^[Ss]hould\\b/]`, message: 'Describe the behaviour directly instead of starting with "Should".'},
+          {selector: `${testTitle}[value=/^[^A-Z]/]`, message: 'Start the test title with an uppercase letter, as a sentence (team test-naming convention).'},
+          {selector: `${testTitle}[value=/^[Ss]hould\\b/]`, message: 'Describe the behaviour directly instead of starting with "Should" (team test-naming convention).'},
           {
             selector: 'CallExpression[callee.name=/^(describe|it|test)$/] > Literal.arguments:first-child[value=/#\\w|\\w\\(\\)/]',
-            message: 'Name the behaviour, not the method under test.',
+            message: 'Name the behaviour, not the method under test (team test-naming convention).',
           },
-          {selector: `${testBody} > ${expectStatement} ~ ${expectStatement}`, message: 'Keep one assertion per test; split this into its own test.'},
+          {selector: `${testBody} > ${containsExpect} ~ ${containsExpect}`, message: 'Keep one assertion per test; split this into its own test (team test convention).'},
         ],
       },
     },
